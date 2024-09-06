@@ -42,29 +42,7 @@
     {
       "key": "clade_membership",
       "title": "Clade",
-      "type": "categorical",
-      "scale": [
-        [
-          "6B.1A.5a",
-          "#57a5d7"
-        ],
-        [
-          "5a.1",
-          "#3e59cf"
-        ],
-        [
-          "5a.2",
-          "#705c94"
-        ],
-        [
-          "5a.2a",
-          "#e39b39"
-        ],
-        [
-          "5a.2a.1",
-          "#dfd24e"
-        ]
-      ]
+      "type": "categorical"
     },
     {
       "key": "subclade",
@@ -72,46 +50,96 @@
       "type": "categorical",
       "scale": [
         [
-          "C",
-          "#3E5DD0"
+          "C.1",
+          "#492AB5"
         ],
         [
-          "C.3",
-          "#4A8CC2"
+          "C.1.1",
+          "#3F4CCB"
         ],
         [
-          "C.4",
-          "#60AA9E"
+          "C.1.2",
+          "#4271CE"
         ],
         [
-          "C.5.1.1",
-          "#80B974"
+          "C.1.5",
+          "#4C8FC0"
         ],
         [
-          "C.5.2",
-          "#A6BE55"
+          "C.1.7",
+          "#5AA5A8"
         ],
         [
-          "C.5.3",
-          "#CBB742"
+          "C.1.7.1",
+          "#6DB38A"
         ],
         [
-          "C.5.3.1",
-          "#E29D39"
+          "C.1.7.2",
+          "#85BA6F"
         ],
         [
-          "C.5.3.2",
-          "#E56A2F"
+          "C.1.8",
+          "#A0BE59"
         ],
         [
-          "C.5.3.3",
+          "C.1.9",
+          "#BBBC49"
+        ],
+        [
+          "D",
+          "#D2B340"
+        ],
+        [
+          "D.1",
+          "#E19F3A"
+        ],
+        [
+          "D.2",
+          "#E68033"
+        ],
+        [
+          "D.3",
+          "#E2562B"
+        ],
+        [
+          "D.4",
           "#DB2823"
         ]
       ]
     },
     {
+      "key": "haplotype",
+      "title": "Derived haplotype",
+      "type": "categorical"
+    },
+    {
+      "key": "cTiter",
+      "title": "Antigenic advance (tree model)",
+      "type": "continuous"
+    },
+    {
+      "key": "cTiterSub",
+      "title": "Antigenic advance (sub model)",
+      "type": "continuous"
+    },
+    {
+      "key": "cTiter_x",
+      "title": "HI antigenic novelty",
+      "type": "continuous"
+    },
+    {
       "key": "lbi",
       "title": "Local branching index",
+      "type": "continuous"
+    },
+    {
+      "key": "ep",
+      "title": "Epitope mutations",
+      "type": "continuous"
+    },
+    {
+      "key": "ne",
+      "title": "Non-epitope mutations",
       "type": "continuous"
     },
     {
@@ -132,6 +160,16 @@
     {
       "key": "division",
       "title": "Division",
+      "type": "categorical"
+    },
+    {
+      "key": "accession_ha",
+      "title": "Accession (HA)",
+      "type": "categorical"
+    },
+    {
+      "key": "accession_na",
+      "title": "Accession (NA)",
       "type": "categorical"
     },
     {
@@ -182,8 +220,7 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "subclade",
-    "branch_label": "Subclade"
+    "color_by": "clade_membership"
   },
   "filters": [
     "clade_membership",

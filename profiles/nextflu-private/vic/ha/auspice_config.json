@@ -1,10 +1,26 @@
 {
   "title": "Real-time tracking of influenza B/Vic evolution",
   "maintainers": [
-    {"name": "Jover Lee", "url": "https://bedford.io/team/jover-lee/"},
-    {"name": "John Huddleston", "url": "https://bedford.io/team/john-huddleston/"},
-    {"name": "Richard Neher", "url": "https://neherlab.org/richard-neher.html"},
-    {"name": "Trevor Bedford", "url": "https://bedford.io/team/trevor-bedford/"}
+    {
+      "name": "Jennifer Chang",
+      "url": "https://bedford.io/team/jennifer-chang/"
+    },
+    {
+      "name": "Jover Lee",
+      "url": "https://bedford.io/team/jover-lee/"
+    },
+    {
+      "name": "John Huddleston",
+      "url": "https://bedford.io/team/john-huddleston/"
+    },
+    {
+      "name": "Richard Neher",
+      "url": "https://neherlab.org/richard-neher.html"
+    },
+    {
+      "name": "Trevor Bedford",
+      "url": "https://bedford.io/team/trevor-bedford/"
+    }
   ],
   "data_provenance": [
     {
@@ -34,56 +50,28 @@
       "type": "categorical",
       "scale": [
         [
-          "A.3.2",
-          "#492AB5"
-        ],
-        [
-          "C",
-          "#3F4CCB"
-        ],
-        [
-          "C.1",
-          "#4271CE"
-        ],
-        [
           "C.2",
-          "#4C8FC0"
+          "#4272CE"
         ],
         [
           "C.3",
-          "#5AA5A8"
-        ],
-        [
-          "C.4",
-          "#6DB38A"
+          "#58A2AC"
         ],
         [
           "C.5",
-          "#85BA6F"
+          "#7DB877"
         ],
         [
           "C.5.1",
-          "#A0BE59"
-        ],
-        [
-          "C.5.2",
-          "#BBBC49"
-        ],
-        [
-          "C.5.3",
-          "#D2B340"
+          "#AEBD50"
         ],
         [
           "C.5.4",
-          "#E19F3A"
-        ],
-        [
-          "C.5.5",
-          "#E68033"
+          "#D8AE3E"
         ],
         [
           "C.5.6",
-          "#E2562B"
+          "#E67A32"
         ],
         [
           "C.5.7",
@@ -131,7 +119,7 @@
       "title": "Country",
       "type": "categorical"
     },
-     {
+    {
       "key": "division",
       "title": "Division",
       "type": "categorical"
@@ -230,6 +218,21 @@
       "key": "year_month",
       "title": "Year/month",
       "type": "categorical"
+    },
+    {
+      "key": "tsne_x",
+      "title": "t-SNE 1",
+      "type": "continuous"
+    },
+    {
+      "key": "tsne_y",
+      "title": "t-SNE 2",
+      "type": "continuous"
+    },
+    {
+      "key": "tsne_cluster",
+      "title": "t-SNE cluster",
+      "type": "categorical"
     }
   ],
   "geo_resolutions": [
@@ -256,7 +259,8 @@
     "submitting_lab",
     "recency",
     "epiweek",
-    "year_month"
+    "year_month",
+    "tsne_cluster"
   ],
   "panels": [
     "tree",

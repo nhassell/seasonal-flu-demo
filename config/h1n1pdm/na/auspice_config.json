@@ -42,29 +42,7 @@
     {
       "key": "clade_membership",
       "title": "Clade",
-      "type": "categorical",
-      "scale": [
-        [
-          "6B.1A.5a",
-          "#57a5d7"
-        ],
-        [
-          "5a.1",
-          "#3e59cf"
-        ],
-        [
-          "5a.2",
-          "#705c94"
-        ],
-        [
-          "5a.2a",
-          "#e39b39"
-        ],
-        [
-          "5a.2a.1",
-          "#dfd24e"
-        ]
-      ]
+      "type": "categorical"
     },
     {
       "key": "subclade",
@@ -110,8 +88,23 @@
       ]
     },
     {
+      "key": "haplotype",
+      "title": "Derived haplotype",
+      "type": "categorical"
+    },
+    {
       "key": "lbi",
       "title": "Local branching index",
+      "type": "continuous"
+    },
+    {
+      "key": "ep",
+      "title": "Epitope mutations",
+      "type": "continuous"
+    },
+    {
+      "key": "ne",
+      "title": "Non-epitope mutations",
       "type": "continuous"
     },
     {
@@ -132,6 +125,16 @@
     {
       "key": "division",
       "title": "Division",
+      "type": "categorical"
+    },
+    {
+      "key": "accession_ha",
+      "title": "Accession (HA)",
+      "type": "categorical"
+    },
+    {
+      "key": "accession_na",
+      "title": "Accession (NA)",
       "type": "categorical"
     },
     {
@@ -182,8 +185,7 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "subclade",
-    "branch_label": "Subclade"
+    "color_by": "clade_membership"
   },
   "filters": [
     "clade_membership",
