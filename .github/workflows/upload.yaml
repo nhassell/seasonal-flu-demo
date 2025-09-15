@@ -12,14 +12,6 @@ on:
         description: "Specific container image to use for Nextstrain public builds"
         required: false
         type: string
-      triggerPrivateNextflu:
-        description: "Trigger private Nextflu builds"
-        required: true
-        type: boolean
-      privateNextfluDockerImage:
-        description: "Specific container image to use for private Nextflu builds"
-        required: false
-        type: string
       triggerNextfluPrivate:
         description: "Trigger nextflu-private group builds"
         required: true
@@ -28,14 +20,11 @@ on:
         description: "Specific container image to use for nextflu-private group builds"
         required: false
         type: string
-      triggerNextclade:
-        description: "Trigger run-nextclade workflow"
-        required: true
-        type: boolean
-      nextcladeDockerImage:
-        description: "Specific container image to use for the Nextclade workflow"
-        required: false
-        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  # Only cancel in progress workflow if the workflow is running on the default branch
+  cancel-in-progress: ${{ github.ref_name == github.event.repository.default_branch }}
 
 jobs:
   upload:
@@ -44,6 +33,7 @@ jobs:
     uses: nextstrain/.github/.github/workflows/pathogen-repo-build.yaml@master
     secrets: inherit
     with:
+      artifact-name: build-outputs-upload
       runtime: docker
       run: |
         nextstrain build \
@@ -57,23 +47,26 @@ jobs:
           upload_all_metadata \
           --configfile profiles/upload.yaml
 
-  trigger:
+  run-nextclade:
     needs: [upload]
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/run-nextclade.yaml
+    with:
+      artifact-name: build-outputs-nextclade
+    secrets: inherit
+
+  trigger:
+    needs: [upload, run-nextclade]
     strategy:
       matrix:
         include:
           - trigger: ${{ inputs.triggerPublic }}
             workflow: run-public-builds.yaml
             image: ${{ inputs.publicDockerImage }}
-          - trigger: ${{ inputs.triggerPrivateNextflu }}
-            workflow: run-private-nextflu-builds.yaml
-            image: ${{ inputs.privateNextfluDockerImage }}
           - trigger: ${{ inputs.triggerNextfluPrivate }}
             workflow: run-nextflu-private-builds.yaml
             image: ${{ inputs.nextfluPrivateDockerImage }}
-          - trigger: ${{ inputs.triggerNextclade }}
-            workflow: run-nextclade.yaml
-            image: ${{ inputs.nextcladeDockerImage }}
     runs-on: ubuntu-latest
     steps:
       - if: ${{ matrix.trigger }}

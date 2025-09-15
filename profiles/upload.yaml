@@ -21,11 +21,12 @@ fauna_fasta_fields:
   - submitting_lab
   - age
   - gender
+  - gisaid_strain
 fasta_fields:
   - strain
   - virus
   - segment
-  - isolate_id
+  - gisaid_epi_isl
   - accession
   - date
   - date_submitted
@@ -38,6 +39,7 @@ fasta_fields:
   - submitting_lab
   - age
   - gender
+  - gisaid_strain
 prettify_fields:
   - region
   - country
@@ -51,6 +53,12 @@ lat-longs: "config/lat_longs.tsv"
 segments:
   - ha
   - na
+  - pb2
+  - pb1
+  - pa
+  - np
+  - mp
+  - ns
 
 tree:
   method: iqtree
@@ -66,6 +74,7 @@ recency:
 builds:
   h1n1pdm_2y:
     lineage: h1n1pdm
+    prioritized_seqs_file: "config/h1n1pdm/{segment}/prioritized_seqs_file.tsv"
     reference: "config/h1n1pdm/{segment}/reference.fasta"
     annotation: "config/h1n1pdm/{segment}/genemap.gff"
     tree_exclude_sites: "config/h1n1pdm/{segment}/exclude-sites.txt"
@@ -114,6 +123,7 @@ builds:
           filters: --query "(passage_category != 'egg') & (is_reference == True)" --min-date {reference_min_date}
   h3n2_2y:
     lineage: "h3n2"
+    prioritized_seqs_file: "config/h3n2/{segment}/prioritized_seqs_file.tsv"
     reference: "config/h3n2/{segment}/reference.fasta"
     annotation: "config/h3n2/{segment}/genemap.gff"
     tree_exclude_sites: "config/h3n2/{segment}/exclude-sites.txt"
@@ -172,6 +182,7 @@ builds:
     subsamples: *representative-subsampling-scheme
   vic_2y:
     lineage: vic
+    prioritized_seqs_file: "config/vic/{segment}/prioritized_seqs_file.tsv"
     reference: "config/vic/{segment}/reference.fasta"
     annotation: "config/vic/{segment}/genemap.gff"
     tree_exclude_sites: "config/vic/{segment}/exclude-sites.txt"
@@ -205,38 +216,4 @@ builds:
         data: "data/vic/vidrl_ferret_cell_hi_titers.tsv"
       - name: vidrl_ferret_egg_hi
         data: "data/vic/vidrl_ferret_egg_hi_titers.tsv"
-    subsamples: *representative-subsampling-scheme
-  yam_2y:
-    lineage: yam
-    reference: "config/yam/{segment}/reference.fasta"
-    annotation: "config/yam/{segment}/genemap.gff"
-    tree_exclude_sites: "config/yam/{segment}/exclude-sites.txt"
-    clades: "config/yam/ha/clades.tsv"
-    auspice_config: "config/yam/auspice_config.json"
-    min_date: "2Y"
-    reference_min_date: "8Y"
-    include: "config/yam/reference_strains.txt"
-    exclude: "config/yam/outliers.txt"
-    vaccines: "config/yam/vaccine.json"
-    titer_collections:
-      - name: who_ferret_cell_hi
-        data: "data/yam/who_ferret_cell_hi_titers.tsv"
-      - name: who_ferret_egg_hi
-        data: "data/yam/who_ferret_egg_hi_titers.tsv"
-      - name: cdc_ferret_cell_hi
-        data: "data/yam/cdc_ferret_cell_hi_titers.tsv"
-      - name: cdc_ferret_egg_hi
-        data: "data/yam/cdc_ferret_egg_hi_titers.tsv"
-      - name: crick_ferret_cell_hi
-        data: "data/yam/crick_ferret_cell_hi_titers.tsv"
-      - name: crick_ferret_egg_hi
-        data: "data/yam/crick_ferret_egg_hi_titers.tsv"
-      - name: niid_ferret_cell_hi
-        data: "data/yam/niid_ferret_cell_hi_titers.tsv"
-      - name: niid_ferret_egg_hi
-        data: "data/yam/niid_ferret_egg_hi_titers.tsv"
-      - name: vidrl_ferret_cell_hi
-        data: "data/yam/vidrl_ferret_cell_hi_titers.tsv"
-      - name: vidrl_ferret_egg_hi
-        data: "data/yam/vidrl_ferret_egg_hi_titers.tsv"
     subsamples: *representative-subsampling-scheme

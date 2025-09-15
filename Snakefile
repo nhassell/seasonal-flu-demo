@@ -48,6 +48,8 @@ subclade_url_by_lineage_and_segment = {
     }
 }
 
+include: "workflow/snakemake_rules/common.smk"
+
 if "data_source" in config and config["data_source"]=='fauna':
     include: "workflow/snakemake_rules/download_from_fauna.smk"
 
@@ -62,8 +64,6 @@ include:  "workflow/snakemake_rules/export.smk"
 include:  "workflow/snakemake_rules/titer_models.smk"
 
 include:  "workflow/snakemake_rules/fitness.smk"
-
-include:  "workflow/snakemake_rules/report.smk"
 
 def _get_build_outputs():
     outputs = []

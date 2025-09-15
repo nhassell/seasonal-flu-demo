@@ -18,7 +18,7 @@ rule plot_antigenic_distances_between_strains:
     input:
         distances="builds/{build_name}/{segment}/antigenic_distances_between_strains/{titer_collection}.tsv",
         clades=lambda wildcards: f"config/subclades_for_titer_plots_{config['builds'][wildcards.build_name]['lineage']}.txt",
-        references=lambda wildcards: f"config/references_for_titer_plots_{config['builds'][wildcards.build_name]['lineage']}.txt",
+        references=lambda wildcards: f"config/references_for_titer_plots/{config['builds'][wildcards.build_name]['lineage']}/{wildcards.titer_collection}.txt",
         auspice_config=lambda wildcards: f"profiles/nextflu-private/{config['builds'][wildcards.build_name]['lineage']}/{wildcards.segment}/auspice_config.json",
     output:
         plot="figures/antigenic_distances_between_strains_{build_name}_{segment}_{titer_collection}.png",
@@ -27,10 +27,10 @@ rule plot_antigenic_distances_between_strains:
     log:
         "logs/plot_antigenic_distances_between_strains_{build_name}_{segment}_{titer_collection}.txt"
     params:
-        min_test_date=2024.0833,
+        min_test_date=2025.08,
         title=get_titer_collection_title,
-        clade_color_field="subclade_test",
-        auspice_config_color_field="subclade",
+        clade_color_field="emerging_haplotype_test",
+        auspice_config_color_field="emerging_haplotype",
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
         """
@@ -73,7 +73,7 @@ rule annotate_titer_counts_for_reference_viruses:
 
 rule summarize_haplotype_titer_coverage:
     input:
-        haplotypes="builds/{build_name}/{segment}/haplotypes.json",
+        haplotypes="builds/{build_name}/{segment}/derived_haplotypes.json",
         distances="builds/{build_name}/{segment}/antigenic_distances_between_strains/{titer_collection}.tsv",
         frequencies="builds/{build_name}/{segment}/tip-frequencies.json",
     output:
@@ -153,7 +153,7 @@ def get_private_node_data(wildcards):
     ]
 
     # Only try to annotate titer collections for HA.
-    if wildcards.segment == "ha":
+    if wildcards.segment == "ha" and config["builds"][wildcards.build_name].get("enable_titer_models", False):
         for collection in config["builds"][wildcards.build_name]["titer_collections"]:
             node_data.append(f"builds/{wildcards.build_name}/{wildcards.segment}/titers_for_reference_viruses/{collection['name']}.json")
             node_data.append(f"builds/{wildcards.build_name}/{wildcards.segment}/haplotypes_without_references/{collection['name']}.json")
@@ -172,6 +172,7 @@ rule export_private:
         node_data = _get_node_data_by_wildcards,
         private_node_data = get_private_node_data,
         auspice_config = lambda w: config['builds'][w.build_name]['auspice_config'],
+        description = lambda w: config['builds'][w.build_name].get("description", "config/description.md"),
         lat_longs = config['lat-longs']
     output:
         auspice_json = "auspice/{build_name}_{segment}.json"
@@ -189,6 +190,7 @@ rule export_private:
             --include-root-sequence-inline \
             --lat-longs {input.lat_longs} \
             --auspice-config {input.auspice_config} \
+            --description {input.description} \
             --minify-json \
             --output {output.auspice_json} 2>&1 | tee {log}
         """

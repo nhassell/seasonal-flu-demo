@@ -50,28 +50,71 @@
       "type": "categorical",
       "scale": [
         [
-          "C.2",
-          "#4272CE"
+          "C.3",
+          "#4068CF"
         ],
         [
-          "C.3",
-          "#58A2AC"
+          "C.3.1",
+          "#5098B9"
+        ],
+        [
+          "C.3.2",
+          "#6CB28C"
         ],
         [
           "C.5",
-          "#7DB877"
+          "#94BD62"
         ],
         [
           "C.5.1",
-          "#AEBD50"
-        ],
-        [
-          "C.5.4",
-          "#D8AE3E"
+          "#BFBB47"
         ],
         [
           "C.5.6",
-          "#E67A32"
+          "#DFA53B"
+        ],
+        [
+          "C.5.6.1",
+          "#E67131"
+        ],
+        [
+          "C.5.7",
+          "#DB2823"
+        ]
+      ]
+    },
+    {
+      "key": "emerging_haplotype",
+      "title": "Emerging haplotype",
+      "type": "categorical",
+      "scale": [
+        [
+          "C.3",
+          "#4068CF"
+        ],
+        [
+          "C.3.1",
+          "#5098B9"
+        ],
+        [
+          "C.3.2",
+          "#6CB28C"
+        ],
+        [
+          "C.5",
+          "#94BD62"
+        ],
+        [
+          "C.5.1",
+          "#BFBB47"
+        ],
+        [
+          "C.5.6",
+          "#DFA53B"
+        ],
+        [
+          "C.5.6.1",
+          "#E67131"
         ],
         [
           "C.5.7",
@@ -233,6 +276,11 @@
       "key": "tsne_cluster",
       "title": "t-SNE cluster",
       "type": "categorical"
+    },
+    {
+      "key": "qc.overallStatus",
+      "title": "Nextclade QC(overallStatus)",
+      "type": "categorical"
     }
   ],
   "geo_resolutions": [
@@ -242,7 +290,7 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "subclade",
+    "color_by": "emerging_haplotype",
     "branch_label": "Subclade"
   },
   "filters": [
@@ -268,5 +316,10 @@
     "map",
     "entropy",
     "frequencies"
+  ],
+  "metadata_columns": [
+    "gisaid_strain",
+    "accession_ha",
+    "accession_na"
   ]
 }

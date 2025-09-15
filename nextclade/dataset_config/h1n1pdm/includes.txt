@@ -1,3 +1,4 @@
+A/Bangladesh/3002/2015
 A/Lao/1632/2023
 A/NorthCarolina/6/2023
 A/Victoria/114/2023
@@ -52,3 +53,59 @@ A/Ghana/FS-11-206/2011
 A/Ghana/ARI1181/2011
 A/BurkinaFaso/26/2012
 A/Yopougon/GR276/2012
+A/Perth/103/2015
+A/Fiji/3/2016
+A/Helsinki/2430/2012
+A/Gansu-Ganzhou/SWL34/2012
+A/Brisbane/96/2012
+A/Minnesota/23/2014
+A/Nagano/2649/2018
+
+# C.1.7.2
+A/Vietnam/24019/2024
+A/NewYorkCity/PV99939/2023
+
+# C.1.7.1
+A/SouthAustralia/46/2023
+A/Brisbane/145/2023
+
+# C.1.7
+A/Sydney/633/2023
+
+# C.1.3
+A/Laos/1460/2023
+A/Vietnam/0219/2023
+
+# C.1.4
+A/Kentucky/13/2022
+
+# C.1.6
+A/Sydney/1365/2022
+A/Victoria/18/2023
+
+# C.1.5
+A/Netherlands/11889/2022
+A/Timor-Leste/12/2023
+A/Madagascar/807/2023
+
+# C.1.9.4
+A/Vietnam/4030/2024
+A/Wisconsin/143/2024
+A/Bahrain/9301/2024
+
+# D.3.1
+A/Malaysia/MKAI_CL30633/2025
+A/Victoria/67/2025
+A/Wisconsin/201/2024
+
+# D.2
+A/Vermont/32/2024
+A/Japan/USAFSAM-14204/2023
+A/Yamanashi/2390/2023
+
+
+ # D.4
+ A/California/144/2023
+ A/Tennessee/3/2024
+ A/Iowa/96/2023
+

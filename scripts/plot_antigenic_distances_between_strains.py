@@ -5,7 +5,8 @@ matplotlib.use('agg')
 
 import argparse
 
-from augur.utils import read_colors, read_strains
+from augur.io import read_strains
+from augur.utils import read_colors
 import json
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -64,7 +65,7 @@ if __name__ == '__main__':
 
     # Annotate reference names with clade.
     df["reference_name"] = df.apply(
-        lambda row: f"{row['reference_strain']}\n({row['haplotype_reference']})",
+        lambda row: f"{row['reference_strain']}\n({row['derived_haplotype_reference']})",
         axis=1
     )
 
@@ -160,7 +161,14 @@ if __name__ == '__main__':
     }
 
     # Initialize the figure
-    fig, ax = plt.subplots(1, 1, figsize=(14, 12))
+    if len(reference_order) == 1:
+        height = 4
+    elif len(reference_order) < 5:
+        height = 8
+    else:
+        height = 12
+
+    fig, ax = plt.subplots(1, 1, figsize=(14, height))
     sns.despine()
 
     if args.plot_raw_data:
@@ -188,12 +196,13 @@ if __name__ == '__main__':
         order=reference_order,
         hue_order=clade_order,
         data=filtered_df,
-        dodge=0.55,
+        dodge=0.75,
         linestyle='none',
         palette=color_by_clade,
         markers="d",
         markersize=8,
-        errorbar=("ci", 89),
+        errorbar="sd",
+        err_kws={"alpha": 0.5,}
     )
 
     # Draw a line at the origin to show where we expect effectively inhibited

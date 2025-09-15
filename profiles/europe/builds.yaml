@@ -1,6 +1,5 @@
 custom_rules:
   - workflow/snakemake_rules/download_from_s3.smk
-  - workflow/snakemake_rules/treeknit.smk
 
 fauna_fasta_fields:
   - strain
@@ -77,6 +76,7 @@ array-builds:
       annotation: "config/{lineage}/{{segment}}/genemap.gff"
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
+      subclades: "config/{lineage}/{{segment}}/subclades.tsv"
       auspice_config: "config/{lineage}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true
@@ -94,8 +94,10 @@ array-builds:
           filters: --group-by region year month --subsample-max-sequences 2500 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'submitting_lab!=Crick Worldwide Influenza Centre'
           priorities: "titers"
       other:
-          filters: --group-by country year month --subsample-max-sequences 1000 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'submitting_lab=Crick Worldwide Influenza Centre'
+          filters: --group-by country year month --subsample-max-sequences 500 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'submitting_lab=Crick Worldwide Influenza Centre'
           priorities: "titers"
+      gishn:
+          filters: --group-by country year month --subsample-max-sequences 500 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'submitting_lab=Crick Worldwide Influenza Centre' 'gishn_sample=False'
   europe:
     patterns:
       lineage:
@@ -114,6 +116,7 @@ array-builds:
       annotation: "config/{lineage}/{{segment}}/genemap.gff"
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
+      subclades: "config/{lineage}/{{segment}}/subclades.tsv"
       auspice_config: "config/{lineage}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true
@@ -130,6 +133,8 @@ array-builds:
       global:
           filters: "--group-by region year month --subsample-max-sequences 1000 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'region=europe'"
           priorities: "titers"
+      gishn:
+          filters: --group-by country year month --subsample-max-sequences 500 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'gishn_sample=False'
       country:
           filters: "--group-by country year month --subsample-max-sequences 2500 --min-date {min_date} --include {include} --exclude {exclude} --exclude-where 'ha!=True' 'na!=True' 'region!=europe'"
           priorities: "titers"
@@ -164,6 +169,7 @@ array-builds:
       annotation: "config/{lineage}/{{segment}}/genemap.gff"
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
+      subclades: "config/{lineage}/{{segment}}/subclades.tsv"
       auspice_config: "config/{lineage}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true

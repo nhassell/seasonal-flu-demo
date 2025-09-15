@@ -107,7 +107,7 @@ rule tree:
         "logs/tree_{build_name}_{segment}.txt"
     params:
         method = config.get("tree", {}).get("method", "iqtree"),
-        tree_builder_args = lambda wildcards: f"--tree-builder-args {config['tree']['tree-builder-args']}" if config.get("tree", {}).get("tree-builder-args") else "",
+        tree_builder_args = lambda wildcards: f"--tree-builder-args={config['tree']['tree-builder-args']}" if config.get("tree", {}).get("tree-builder-args") else "",
         override_default_args = lambda wildcards: "--override-default-args" if config.get("tree", {}).get("override_default_args", False) else "",
     threads: 8
     resources:
@@ -149,13 +149,14 @@ rule prune_outliers:
         outliers = build_dir + "/{build_name}/{segment}/outliers.tsv"
     params:
         keep_strains_argument=lambda wildcards: "--keep-strains " + config["builds"][wildcards.build_name]["include"] if "include" in config["builds"][wildcards.build_name] else "",
+        cutoff=config.get("prune_outliers_z_score_cutoff", 4.0),
     shell:
         """
         python3 scripts/flag_outliers.py \
             --tree {input.tree:q} \
             --aln {input.aln} \
             --dates {input.metadata} \
-            --cutoff 4.0 \
+            --cutoff {params.cutoff} \
             {params.keep_strains_argument} \
             --output-tree {output.tree:q} --output-outliers {output.outliers} 2>&1 | tee {log}
         """
@@ -232,7 +233,7 @@ rule refine:
     params:
         coalescent = "const",
         date_inference = "marginal",
-        clock_filter_iqd = 4,
+        clock_filter_iqd = lambda wildcards: config.get("refine", {}).get("clock_filter_iqd", 4),
         clock_rate = clock_rate,
         clock_std_dev = clock_std_dev
     conda: "../envs/nextstrain.yaml"
@@ -420,18 +421,42 @@ rule import_clades:
             --output {output.node_data} 2>&1 | tee {log}
         """
 
-rule annotate_haplotypes:
+rule emerging_haplotypes:
+    input:
+        nextclade=build_dir + "/{build_name}/metadata_with_nextclade.tsv",
+        haplotypes=lambda wildcards: config["builds"][wildcards.build_name].get("emerging_haplotypes"),
+    output:
+        haplotypes_table=build_dir + "/{build_name}/{segment}/emerging_haplotypes.tsv",
+        node_data=build_dir + "/{build_name}/{segment}/emerging_haplotypes.json",
+    params:
+        clade_column="subclade",
+        membership_name="emerging_haplotype",
+    conda: "../envs/nextstrain.yaml"
+    log:
+        "logs/emerging_haplotypes_{build_name}_{segment}.txt"
+    shell:
+        r"""
+        python scripts/assign_haplotypes.py \
+            --substitutions {input.nextclade:q} \
+            --haplotypes {input.haplotypes:q} \
+            --clade-column {params.clade_column:q} \
+            --haplotype-column-name {params.membership_name:q} \
+            --output-table {output.haplotypes_table:q} \
+            --output-node-data {output.node_data:q} 2>&1 | tee {log}
+        """
+
+rule annotate_derived_haplotypes:
     input:
         tree=build_dir + "/{build_name}/ha/tree.nwk",
         translations=build_dir + "/{build_name}/ha/translations.done",
         clades=lambda wildcards: build_dir + "/{build_name}/ha/subclades.json" if "subclades" in config["builds"][wildcards.build_name] else build_dir + "/{build_name}/ha/clades.json",
     output:
-        haplotypes=build_dir + "/{build_name}/ha/haplotypes.json",
+        haplotypes=build_dir + "/{build_name}/ha/derived_haplotypes.json",
     conda: "../envs/nextstrain.yaml"
     benchmark:
-        "benchmarks/annotate_haplotypes_{build_name}_ha.txt"
+        "benchmarks/annotate_derived_haplotypes_{build_name}_ha.txt"
     log:
-        "logs/annotate_haplotypes_{build_name}_ha.txt"
+        "logs/annotate_derived_haplotypes_{build_name}_ha.txt"
     params:
         min_tips=config.get("haplotypes", {}).get("min_tips", 5),
         alignment=build_dir + "/{build_name}/ha/translations/HA1_withInternalNodes.fasta",
@@ -439,7 +464,7 @@ rule annotate_haplotypes:
         clade_node_attribute=lambda wildcards: "subclade" if "subclades" in config["builds"][wildcards.build_name] else "clade_membership"
     shell:
         """
-        python3 scripts/annotate_haplotypes.py \
+        python3 scripts/annotate_derived_haplotypes.py \
             --tree {input.tree} \
             --alignment {params.alignment} \
             --clades {input.clades} \
@@ -454,12 +479,13 @@ rule tip_frequencies:
         tree = rules.refine.output.tree,
         metadata = build_dir + "/{build_name}/metadata.tsv",
     params:
-        narrow_bandwidth = 1 / 12.0,
-        wide_bandwidth = 3 / 12.0,
-        proportion_wide = 0.0,
+        narrow_bandwidth=lambda wildcards: config["builds"][wildcards.build_name].get("frequencies", {}).get("narrow_bandwidth", 1 / 12.0),
+        wide_bandwidth=lambda wildcards: config["builds"][wildcards.build_name].get("frequencies", {}).get("wide_bandwidth", 3 / 12.0),
+        proportion_wide=lambda wildcards: config["builds"][wildcards.build_name].get("frequencies", {}).get("proportion_wide", 0.0),
         min_date_arg = lambda w: f"--min-date {config['builds'][w.build_name]['min_date']}" if "min_date" in config["builds"].get(w.build_name, {}) else "",
         max_date = lambda w: config['builds'][w.build_name]['max_date'] if "max_date" in config["builds"].get(w.build_name, {}) else "0D",
-        pivot_interval = 1
+        pivot_interval=lambda wildcards: config["builds"][wildcards.build_name].get("frequencies", {}).get("pivot_interval", 1),
+        pivot_interval_units=lambda wildcards: config["builds"][wildcards.build_name].get("frequencies", {}).get("pivot_interval_units", "months"),
     output:
         tip_freq = "builds/{build_name}/{segment}/tip-frequencies.json"
     conda: "../envs/nextstrain.yaml"
@@ -477,6 +503,7 @@ rule tip_frequencies:
             --wide-bandwidth {params.wide_bandwidth} \
             --proportion-wide {params.proportion_wide} \
             --pivot-interval {params.pivot_interval} \
+            --pivot-interval-units {params.pivot_interval_units} \
             {params.min_date_arg} \
             --max-date {params.max_date} \
             --output {output} 2>&1 | tee {log}

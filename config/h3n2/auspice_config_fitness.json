@@ -152,5 +152,9 @@
     "map",
     "entropy",
     "frequencies"
+  ],
+  "metadata_columns": [
+    "accession_ha",
+    "accession_na"
   ]
 }

@@ -72,40 +72,20 @@
       "type": "categorical",
       "scale": [
         [
-          "C",
-          "#3E5DD0"
-        ],
-        [
-          "C.3",
+          "C.5.3",
           "#4A8CC2"
         ],
         [
-          "C.4",
-          "#60AA9E"
+          "D",
+          "#71B486"
         ],
         [
-          "C.5.1.1",
-          "#80B974"
+          "D.1",
+          "#ABBD52"
         ],
         [
-          "C.5.2",
-          "#A6BE55"
-        ],
-        [
-          "C.5.3",
-          "#CBB742"
-        ],
-        [
-          "C.5.3.1",
-          "#E29D39"
-        ],
-        [
-          "C.5.3.2",
-          "#E56A2F"
-        ],
-        [
-          "C.5.3.3",
-          "#DB2823"
+          "D.2",
+          "#DEA73C"
         ]
       ]
     },
@@ -182,7 +162,7 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "subclade",
+    "color_by": "proposed_subclade",
     "branch_label": "Subclade"
   },
   "filters": [
@@ -202,5 +182,10 @@
     "map",
     "entropy",
     "frequencies"
+  ],
+  "metadata_columns": [
+    "gisaid_strain",
+    "accession_ha",
+    "accession_na"
   ]
 }

@@ -11,8 +11,10 @@ def _get_node_data_by_wildcards(wildcards):
         rules.clades.output.node_data,
         rules.traits.output.node_data,
         rules.annotate_epiweeks.output.node_data,
-        rules.annotate_recency_of_submissions.output.node_data,
     ]
+
+    if "recency" in config:
+        inputs.append(rules.annotate_recency_of_submissions.output.node_data)
 
     # Only request a distance file for builds that have distance map
     # configurations defined.
@@ -22,6 +24,9 @@ def _get_node_data_by_wildcards(wildcards):
 
     if config["builds"][wildcards.build_name].get('subclades', False):
         inputs.append(rules.subclades.output.node_data)
+
+    if wildcards.segment == "ha" and config["builds"][wildcards.build_name].get('emerging_haplotypes', False):
+        inputs.append(rules.emerging_haplotypes.output.node_data)
 
     if config["builds"][wildcards.build_name].get('enable_titer_models', False) and wildcards.segment == 'ha':
         for collection in config["builds"][wildcards.build_name]["titer_collections"]:
@@ -49,7 +54,7 @@ def _get_node_data_by_wildcards(wildcards):
         inputs.append(rules.convert_embedding_clusters_to_node_data.output.node_data)
 
     if wildcards.segment == "ha":
-        inputs.append(rules.annotate_haplotypes.output.haplotypes)
+        inputs.append(rules.annotate_derived_haplotypes.output.haplotypes)
 
     # Convert input files from wildcard strings to real file names.
     inputs = [input_file.format(**wildcards_dict) for input_file in inputs]
@@ -62,6 +67,7 @@ rule export:
         metadata = build_dir + "/{build_name}/metadata.tsv",
         node_data = _get_node_data_by_wildcards,
         auspice_config = lambda w: config['builds'][w.build_name]['auspice_config'],
+        description = lambda w: config['builds'][w.build_name].get("description", "config/description.md"),
         lat_longs = config.get('lat-longs', "config/lat_longs.tsv"),
     output:
         auspice_json = "auspice/{build_name}_{segment}.json"
@@ -79,6 +85,7 @@ rule export:
             --include-root-sequence-inline \
             --lat-longs {input.lat_longs} \
             --auspice-config {input.auspice_config} \
+            --description {input.description} \
             --output {output.auspice_json} 2>&1 | tee {log}
         """
 

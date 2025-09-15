@@ -50,28 +50,79 @@
       "type": "categorical",
       "scale": [
         [
-          "G.1.3.1",
+          "J.2",
           "#447CCD"
         ],
         [
-          "J",
+          "J.2.1",
           "#5EA9A1"
         ],
         [
-          "J.1",
+          "J.2.2",
           "#8ABB6A"
         ],
         [
-          "J.2",
+          "J.2.3",
           "#BEBB48"
         ],
         [
-          "J.3",
+          "J.2.4",
           "#E29E39"
         ],
         [
-          "J.4",
+          "J.2.5",
           "#E2562B"
+        ]
+      ]
+    },
+    {
+      "key": "emerging_haplotype",
+      "title": "Emerging haplotype",
+      "type": "categorical",
+      "scale": [
+        [
+          "J.2",
+          "#3F47C9"
+        ],
+        [
+          "J.2.1",
+          "#4274CE"
+        ],
+        [
+          "J.2.2",
+          "#4F97BB"
+        ],
+        [
+          "J.2.3",
+          "#64AC99"
+        ],
+        [
+          "J.2.4",
+          "#7EB976"
+        ],
+        [
+          "J.2.5",
+          "#9EBE5A"
+        ],
+        [
+          "J.2:135A-145N",
+          "#BEBB48"
+        ],
+        [
+          "J.2:135K",
+          "#D9AE3E"
+        ],
+        [
+          "J.2:145N",
+          "#E69036"
+        ],
+        [
+          "J.2:223I",
+          "#E35F2D"
+        ],
+        [
+          "J.2:8D",
+          "#DB2823"
         ]
       ]
     },
@@ -126,6 +177,16 @@
       "type": "continuous"
     },
     {
+      "key": "cell_entry",
+      "title": "cell entry (Yu et al. 2025)",
+      "type": "continuous"
+    },
+    {
+      "key": "ph_stability",
+      "title": "pH stability (Yu et al. 2025)",
+      "type": "continuous"
+    },
+    {
       "key": "region",
       "title": "Region",
       "type": "categorical"
@@ -138,16 +199,6 @@
     {
       "key": "division",
       "title": "Division",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_ha",
-      "title": "Accession (HA)",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_na",
-      "title": "Accession (NA)",
       "type": "categorical"
     },
     {
@@ -189,6 +240,11 @@
       "key": "tsne_cluster",
       "title": "t-SNE cluster",
       "type": "categorical"
+    },
+    {
+      "key": "qc.overallStatus",
+      "title": "Nextclade QC(overallStatus)",
+      "type": "categorical"
     }
   ],
   "geo_resolutions": [
@@ -198,7 +254,9 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "clade_membership"
+    "color_by": "subclade",
+    "branch_label": "Subclade",
+    "tip_label": "gisaid_strain"
   },
   "filters": [
     "clade_membership",
@@ -217,5 +275,21 @@
     "map",
     "entropy",
     "frequencies"
-  ]
+  ],
+  "metadata_columns": [
+    "gisaid_strain",
+    "accession_ha",
+    "accession_na"
+  ],
+  "extensions": {
+    "nextclade": {
+      "clade_node_attrs": [
+        {
+          "name": "subclade",
+          "displayName": "Subclade",
+          "description": "Experimental fine-grained subclade annotation."
+        }
+      ]
+    }
+  }
 }

@@ -31,7 +31,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: blab/nextflu
           sparse-checkout: |
@@ -50,7 +50,7 @@ jobs:
           working-directory: ${{ env.WORKING_DIR }}
 
       - name: Configure credentials for GitHub Actions job access to AWS Batch
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::827581582529:role/GitHubActionsRoleNextstrainBatchJobs
@@ -80,7 +80,7 @@ jobs:
       - name: Build site
         run: bundle exec jekyll build
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           # Minimum node version to install Netlify CLI
           # https://docs.netlify.com/cli/get-started/#installation

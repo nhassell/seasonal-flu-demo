@@ -33,6 +33,11 @@
       "type": "categorical"
     },
     {
+      "key": "proposed_subclade",
+      "title": "Proposed subclade",
+      "type": "categorical"
+    },
+    {
       "key": "haplotype",
       "title": "Derived haplotype",
       "type": "categorical"
@@ -85,16 +90,6 @@
     {
       "key": "division",
       "title": "Division",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_ha",
-      "title": "Accession (HA)",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_na",
-      "title": "Accession (NA)",
       "type": "categorical"
     },
     {
@@ -164,5 +159,20 @@
     "map",
     "entropy",
     "frequencies"
-  ]
+  ],
+  "metadata_columns": [
+    "accession_ha",
+    "accession_na"
+  ],
+  "extensions": {
+    "nextclade": {
+      "clade_node_attrs": [
+        {
+          "name": "subclade",
+          "displayName": "Subclade",
+          "description": "Experimental fine-grained subclade annotation."
+        }
+      ]
+    }
+  }
 }

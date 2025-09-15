@@ -70,6 +70,27 @@ rule join_metadata:
             --output {output.metadata:q} 2>&1 | tee {log}
         """
 
+# Annotate strains in the metadata that have "GIHSN" in the strain name to
+# indicate whether it was collected as part of the Global Influenza Hospital
+# Surveillance Network (GIHSN)
+rule annotate_metadata_with_gihsn:
+    input:
+        metadata="data/{lineage}/metadata_joined.tsv",
+    output:
+        metadata=temp("data/{lineage}/metadata_with_gihsn.tsv"),
+    conda: "../envs/nextstrain.yaml"
+    benchmark:
+        "benchmarks/annotate_metadata_with_gihsn_{lineage}.txt"
+    log:
+        "logs/annotate_metadata_with_gihsn_{lineage}.txt"
+    shell:
+        """
+        csvtk --tabs mutate2 \
+            --expression '${{strain}}=~"(GIHSN)" ? "True" : "False"' \
+            --name gihsn_sample \
+            {input.metadata} > {output.metadata}
+        """
+
 rule build_reference_strains_table:
     input:
         references="config/{lineage}/reference_strains.txt",
@@ -96,7 +117,7 @@ rule build_reference_strains_table:
 # later.
 rule annotate_metadata_with_reference_strains:
     input:
-        metadata="data/{lineage}/metadata_joined.tsv",
+        metadata="data/{lineage}/metadata_with_gihsn.tsv",
         references="data/{lineage}/reference_strains.tsv",
     output:
         metadata="data/{lineage}/metadata.tsv",
@@ -127,7 +148,7 @@ rule concat_titers_for_build:
         "logs/concat_titers_for_build_{build_name}.txt"
     shell:
         """
-        tsv-append -H {input.titers} > {output.titers} 2> {log}
+        tsv-append -H {input.titers} | tsv-select -H -f virus_strain,serum_strain > {output.titers} 2> {log}
         """
 
 rule titer_priorities:
@@ -169,12 +190,37 @@ rule build_titer_strains_table:
                 --expression "'True'" > {output.titer_strains}
         """
 
+rule build_titer_reference_strains_table:
+    input:
+        titers="builds/{build_name}/all_titers.tsv",
+    output:
+        titer_strains=build_dir + "/{build_name}/titer_reference_strains.tsv",
+    conda: "../envs/nextstrain.yaml"
+    benchmark:
+        "benchmarks/build_titer_reference_strains_table_{build_name}.txt"
+    log:
+        "logs/build_titer_reference_strains_table_{build_name}.txt"
+    shell:
+        """
+        csvtk --tabs cut \
+            --fields serum_strain \
+            {input.titers} \
+            | csvtk rename \
+              --fields serum_strain \
+              --names strain \
+            | csvtk uniq \
+            | csvtk --out-tabs mutate2 \
+                --name is_titer_reference_strain \
+                --expression "'True'" > {output.titer_strains}
+        """
+
 # Annotate strains in the metadata based on whether they have titer data or not,
 # so we can include these strains by attribute from augur filter later.
 rule annotate_metadata_with_titer_strains:
     input:
         metadata=lambda wildcards: f"data/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv",
-        references=build_dir + "/{build_name}/titer_strains.tsv",
+        titer_strains=build_dir + "/{build_name}/titer_strains.tsv",
+        titer_reference_strains=build_dir + "/{build_name}/titer_reference_strains.tsv",
     output:
         metadata=build_dir + "/{build_name}/full_metadata_with_titer_annotations.tsv",
     conda: "../envs/nextstrain.yaml"
@@ -184,15 +230,44 @@ rule annotate_metadata_with_titer_strains:
         "logs/annotate_metadata_with_titer_strains_{build_name}.txt"
     shell:
         """
-        csvtk --tabs join \
-            --left-join \
-            --na "False" \
-            -f "strain" \
-            {input.metadata} \
-            {input.references} > {output.metadata}
+        csvtk --tabs join --left-join --na "False" -f "strain" {input.metadata} {input.titer_strains} \
+            | csvtk --tabs join --left-join --na "False" -f "strain" /dev/stdin {input.titer_reference_strains} > {output.metadata}
         """
 
-def get_metadata_for_subsampling(wildcards):
+# Run Nextclade, if we don't already have access to Nextclade annotations from
+# elsewhere (e.g., S3).
+rule get_nextclade_dataset_for_lineage_and_segment:
+    output:
+        nextclade_dir=directory("nextclade_dataset/{lineage}_{segment}/"),
+    params:
+        nextclade_server_arg=lambda wildcards: f"--server={shquotewords(config['nextclade_server'])}" if config.get("nextclade_server") else "",
+    shell:
+        r"""
+        nextclade3 dataset get \
+            -n 'nextstrain/flu/{wildcards.lineage}/{wildcards.segment}' \
+            {params.nextclade_server_arg} \
+            --output-dir {output.nextclade_dir}
+        """
+
+rule run_nextclade:
+    input:
+        nextclade_dir="nextclade_dataset/{lineage}_{segment}/",
+        sequences="data/{lineage}/{segment}.fasta",
+    output:
+        annotations="data/{lineage}/{segment}/nextclade.tsv.xz",
+    log:
+        "logs/run_nextclade_{lineage}_{segment}.txt"
+    threads: 8
+    shell:
+        r"""
+        nextclade3 run \
+            -j {threads} \
+            -D {input.nextclade_dir} \
+            --output-tsv {output.annotations} \
+            {input.sequences}
+        """
+
+def get_metadata_for_nextclade_merge(wildcards):
     # Use metadata annotated with a given build's titer strains, if we are
     # building the measurements panel or running titer models.
     if config['builds'][wildcards.build_name].get("enable_measurements") or config['builds'][wildcards.build_name].get("enable_titer_models"):
@@ -200,8 +275,38 @@ def get_metadata_for_subsampling(wildcards):
     else:
         return f"data/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv"
 
+def get_nextclade_for_subsampling(wildcards):
+    return f"data/{config['builds'][wildcards.build_name]['lineage']}/ha/nextclade.tsv.xz"
+
+rule merge_nextclade_with_metadata:
+    """
+    Nextclade data is either merged with regular metadata (1) or titered metadata (2), see functions above
+    """
+    input:
+        metadata=get_metadata_for_nextclade_merge,
+        nextclade=get_nextclade_for_subsampling,
+    output:
+        merged = "{build_dir}/{build_name}/metadata_with_nextclade.tsv"
+    params:
+        metadata_id="strain",
+        nextclade_id="seqName",
+    conda: "../envs/nextstrain.yaml"
+    log:
+        "logs/{build_dir}/{build_name}/merge_nextclade_with_metadata.txt"
+    shell:
+        r"""
+        augur merge \
+           --metadata \
+             metadata={input.metadata} \
+             nextclade={input.nextclade} \
+           --metadata-id-columns \
+             metadata={params.metadata_id} \
+             nextclade={params.nextclade_id} \
+           --output-metadata {output.merged} 2>&1 | tee {log}
+        """
+
 def get_subsample_input(w):
-    files = {"metadata": get_metadata_for_subsampling(w)}
+    files = {"metadata": f"{build_dir}/{w.build_name}/metadata_with_nextclade.tsv"}
     if config['builds'][w.build_name]['subsamples'][w.subsample].get('priorities', '')=='titers':
         files['titers']=build_dir + f"/{w.build_name}/titer_priorities.tsv"
     return files
@@ -222,7 +327,7 @@ rule subsample:
     log:
         "logs/subsample_{build_name}_{subsample}.txt"
     shell:
-        """
+        r"""
         augur filter \
             --metadata {input.metadata} \
             {params.filters} \
@@ -233,7 +338,7 @@ rule subsample:
 
 rule select_strains:
     input:
-        metadata = get_metadata_for_subsampling,
+        metadata = build_dir + "/{build_name}/metadata_with_nextclade.tsv",
         subsamples = lambda w: [f"{build_dir}/{w.build_name}/strains_{s}.txt" for s in config['builds'][w.build_name]['subsamples']],
     output:
         metadata = build_dir + "/{build_name}/metadata.tsv",

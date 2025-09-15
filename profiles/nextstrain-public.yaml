@@ -6,30 +6,6 @@ custom_rules:
 # URL for auto-deploying builds
 deploy_url: s3://nextstrain-data
 
-fasta_fields:
-  - strain
-  - virus
-  - segment
-  - accession
-  - date
-  - date_submitted
-  - region
-  - country
-  - division
-  - location
-  - passage_category
-  - originating_lab
-  - submitting_lab
-  - age
-  - gender
-prettify_fields:
-  - region
-  - country
-  - division
-  - location
-  - originating_lab
-  - submitting_lab
-
 lat-longs: "config/lat_longs.tsv"
 
 segments:
@@ -65,6 +41,7 @@ array-builds:
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
       subclades: "config/{lineage}/{{segment}}/subclades.tsv"
+      emerging_haplotypes: "config/{lineage}/{{segment}}/emerging_haplotypes.tsv"
       auspice_config: "config/{lineage}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true
@@ -78,13 +55,13 @@ array-builds:
           data: "data/{lineage}/cdc_ferret_cell_hi_titers.tsv"
     subsamples: &subsampling-scheme
       regions_except_europe:
-          filters: --query "(passage_category != 'egg') & (region != 'Europe') & (ha == True) & (na == True)" --group-by region year month --subsample-max-sequences 2700 --min-date {min_date} --exclude {exclude} --exclude-where passage=egg
+          filters: --query "(passage_category != 'egg') & (region != 'Europe') & (ha == True) & (na == True) & (\`qc.overallStatus\` == 'good')" --group-by region year month --subsample-max-sequences 2700 --min-date {min_date} --exclude {exclude}
           priorities: "titers"
       europe:
-          filters: --query "(passage_category != 'egg') & (region == 'Europe') & (ha == True) & (na == True)" --group-by country year month --subsample-max-sequences 300 --min-date {min_date} --exclude {exclude} --exclude-where passage=egg
+          filters: --query "(passage_category != 'egg') & (region == 'Europe') & (ha == True) & (na == True) & (\`qc.overallStatus\` == 'good')" --group-by country year month --subsample-max-sequences 300 --min-date {min_date} --exclude {exclude}
           priorities: "titers"
       references:
-          filters: --query "(is_reference == True)" --min-date {reference_min_date} --exclude-where passage=egg
+          filters: --query "(is_reference == True)" --min-date {reference_min_date}
   2Y-hi-builds:
     patterns:
       lineage:
@@ -104,6 +81,7 @@ array-builds:
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
       subclades: "config/{lineage}/{{segment}}/subclades.tsv"
+      emerging_haplotypes: "config/{lineage}/{{segment}}/emerging_haplotypes.tsv"
       auspice_config: "config/{lineage}/{{segment}}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true
@@ -175,6 +153,7 @@ array-builds:
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
       subclades: "config/{lineage}/{{segment}}/subclades.tsv"
+      emerging_haplotypes: "config/{lineage}/{{segment}}/emerging_haplotypes.tsv"
       auspice_config: "config/{lineage}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true
@@ -205,6 +184,7 @@ array-builds:
       tree_exclude_sites: "config/{lineage}/{{segment}}/exclude-sites.txt"
       clades: "config/{lineage}/ha/clades.tsv"
       subclades: "config/{lineage}/{{segment}}/subclades.tsv"
+      emerging_haplotypes: "config/{lineage}/{{segment}}/emerging_haplotypes.tsv"
       auspice_config: "config/{lineage}/{{segment}}/auspice_config.json"
       vaccines: "config/{lineage}/vaccine.json"
       enable_glycosylation: true

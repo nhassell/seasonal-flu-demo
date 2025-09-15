@@ -51,19 +51,35 @@
       "scale": [
         [
           "B.4",
-          "#4A8CC2"
+          "#4068CF"
         ],
         [
           "B.4.1",
-          "#71B486"
+          "#5098B9"
         ],
         [
           "B.4.2",
-          "#ABBD52"
+          "#6CB28C"
+        ],
+        [
+          "B.4.2.1",
+          "#94BD62"
+        ],
+        [
+          "B.4.2.2",
+          "#BFBB47"
+        ],
+        [
+          "B.4.2.3",
+          "#DFA53B"
         ],
         [
           "B.4.3",
-          "#DEA73C"
+          "#E67131"
+        ],
+        [
+          "B.4.4",
+          "#DB2823"
         ]
       ]
     },
@@ -110,16 +126,6 @@
     {
       "key": "division",
       "title": "Division",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_ha",
-      "title": "Accession (HA)",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_na",
-      "title": "Accession (NA)",
       "type": "categorical"
     },
     {
@@ -170,7 +176,9 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "clade_membership"
+    "color_by": "subclade",
+    "branch_label": "Subclade",
+    "tip_label": "gisaid_strain"
   },
   "filters": [
     "clade_membership",
@@ -189,5 +197,21 @@
     "map",
     "entropy",
     "frequencies"
-  ]
+  ],
+  "metadata_columns": [
+    "gisaid_strain",
+    "accession_ha",
+    "accession_na"
+  ],
+  "extensions": {
+    "nextclade": {
+      "clade_node_attrs": [
+        {
+          "name": "subclade",
+          "displayName": "Subclade",
+          "description": "Experimental fine-grained subclade annotation."
+        }
+      ]
+    }
+  }
 }

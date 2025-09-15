@@ -50,59 +50,82 @@
       "type": "categorical",
       "scale": [
         [
-          "C.1",
-          "#492AB5"
-        ],
-        [
-          "C.1.1",
-          "#3F4CCB"
-        ],
-        [
-          "C.1.2",
-          "#4271CE"
-        ],
-        [
-          "C.1.5",
-          "#4C8FC0"
-        ],
-        [
-          "C.1.7",
-          "#5AA5A8"
-        ],
-        [
-          "C.1.7.1",
-          "#6DB38A"
-        ],
-        [
-          "C.1.7.2",
-          "#85BA6F"
-        ],
-        [
-          "C.1.8",
-          "#A0BE59"
-        ],
-        [
           "C.1.9",
-          "#BBBC49"
+          "#3E5DD0"
+        ],
+        [
+          "C.1.9.1",
+          "#4A8CC2"
+        ],
+        [
+          "C.1.9.2",
+          "#60AA9E"
+        ],
+        [
+          "C.1.9.3",
+          "#80B974"
         ],
         [
           "D",
-          "#D2B340"
+          "#A6BE55"
         ],
         [
           "D.1",
-          "#E19F3A"
-        ],
-        [
-          "D.2",
-          "#E68033"
+          "#CBB742"
         ],
         [
           "D.3",
-          "#E2562B"
+          "#E29D39"
         ],
         [
-          "D.4",
+          "D.3.1",
+          "#E56A2F"
+        ],
+        [
+          "D.5",
+          "#DB2823"
+        ]
+      ]
+    },
+    {
+      "key": "emerging_haplotype",
+      "title": "Emerging haplotype",
+      "type": "categorical",
+      "scale": [
+        [
+          "C.1.9",
+          "#3E5DD0"
+        ],
+        [
+          "C.1.9.1",
+          "#4A8CC2"
+        ],
+        [
+          "C.1.9.3",
+          "#60AA9E"
+        ],
+        [
+          "D",
+          "#80B974"
+        ],
+        [
+          "D.3.1",
+          "#A6BE55"
+        ],
+        [
+          "D.3.1:113K",
+          "#CBB742"
+        ],
+        [
+          "D.3.1:113K-139D-283K",
+          "#E29D39"
+        ],
+        [
+          "D.3.1:185T",
+          "#E56A2F"
+        ],
+        [
+          "D.5",
           "#DB2823"
         ]
       ]
@@ -163,16 +186,6 @@
       "type": "categorical"
     },
     {
-      "key": "accession_ha",
-      "title": "Accession (HA)",
-      "type": "categorical"
-    },
-    {
-      "key": "accession_na",
-      "title": "Accession (NA)",
-      "type": "categorical"
-    },
-    {
       "key": "submitting_lab",
       "title": "Submitting lab",
       "type": "categorical"
@@ -211,6 +224,11 @@
       "key": "tsne_cluster",
       "title": "t-SNE cluster",
       "type": "categorical"
+    },
+    {
+      "key": "qc.overallStatus",
+      "title": "Nextclade QC(overallStatus)",
+      "type": "categorical"
     }
   ],
   "geo_resolutions": [
@@ -220,7 +238,9 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "clade_membership"
+    "color_by": "subclade",
+    "branch_label": "Subclade",
+    "tip_label": "gisaid_strain"
   },
   "filters": [
     "clade_membership",
@@ -239,5 +259,21 @@
     "map",
     "entropy",
     "frequencies"
-  ]
+  ],
+  "metadata_columns": [
+    "gisaid_strain",
+    "accession_ha",
+    "accession_na"
+  ],
+  "extensions": {
+    "nextclade": {
+      "clade_node_attrs": [
+        {
+          "name": "subclade",
+          "displayName": "Subclade",
+          "description": "Experimental fine-grained subclade annotation."
+        }
+      ]
+    }
+  }
 }
