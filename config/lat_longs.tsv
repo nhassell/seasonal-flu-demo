@@ -14434,6 +14434,7 @@ country	Congo	-4.0383	21.7587
 country	Costa Rica	10.0379	-83.818759
 country	Côte d'Ivoire	7.9897371	-5.5679458
 country	Cote D Ivoire	7.9897371	-5.5679458
+country	Cote d'Ivoire	7.9897371	-5.5679458
 country	Crimea	45.28350435	34.20081877526554
 country	Croatia	45.1	15.2
 country	Cuba	23.0131338	-80.8328748
@@ -14475,11 +14476,13 @@ country	Guyana	4.8417097	-58.6416891
 country	Haiti	19.1399952	-72.3570972
 country	Honduras	15.2572432	-86.0755145
 country	Hong Kong	22.3964	114.1095
+country	Hong Kong (SAR)	22.3964	114.1095
 country	Hungary	47.0	20.0
 country	Iceland	64.90614	-18.4826
 country	India	21.077353	78.723951
 country	Indonesia	-0.897599	114.181602
 country	Iran	34.5732	51.876
+country	Iran, Islamic Republic of	34.5732	51.876
 country	Iraq	33.0955793	44.1749775
 country	Ireland	52.865	-7.979
 country	Israel	31.217736	34.903129
@@ -14494,6 +14497,7 @@ country	Kosovo	42.6026	20.9030
 country	Kuwait	29.452987	47.447194
 country	Kyrgyzstan	41.2044	74.7661
 country	Laos	20.0171109	103.378253
+country	Lao, People's Democratic Republic	20.0171109	103.378253
 country	Latvia	56.799689	25.441386
 country	Lebanon	33.945959	35.868630
 country	Lesotho	-29.6039267	28.3350193
@@ -14504,6 +14508,7 @@ country	Lithuania	55.378752	23.945328
 country	Luxembourg	49.755428	6.119486
 country	Macedonia	41.6137143	21.743258
 country	Madagascar	-18.9249604	46.4416422
+country	Reunion	-18.9249604	46.4416422
 country	Malawi	-13.2687204	33.9301963
 country	Malaysia	4.264153	102.222436
 country	Maldives	4.7064352	73.3287853
@@ -14515,6 +14520,7 @@ country	Mauritius	-20.2759451	57.5703566
 country	Mayotte	-12.8210325	45.1590997
 country	Mexico	19.4325301	-99.1332101
 country	Moldova	47.2879608	28.5670941
+country	Moldova, Republic of	47.2879608	28.5670941
 country	Monaco	43.73844905	7.424224092532953
 country	Mongolia	47.504782	102.997672
 country	Montenegro	42.9868853	19.5180992
@@ -14546,6 +14552,7 @@ country	Qatar	25.230573	51.183951
 country	Republic of the Congo	-0.516362	15.877811
 country	Romania	45.9432	24.9668
 country	Russia	64.6863136	97.7453061
+country	Russian Federation	64.6863136	97.7453061
 country	Rwanda	-1.9646631	30.0644358
 country	Saint Barthélemy	17.900773100000002	-62.7971665877911
 country	Saint Kitts and Nevis	17.250512	-62.6725973
@@ -14565,7 +14572,9 @@ country	Slovenia	45.8133113	14.4808369
 country	Solomon Islands	-8.7053941	159.1070693851845
 country	Somalia	8.3676771	49.083416
 country	South Africa	-28.8166235	24.991639
+country	Cape Town	-28.8166235	24.991639
 country	South Korea	36.609249	127.917932
+country	Korea, Republic of	36.609249	127.917932
 country	South Sudan	7.8699431	29.6667897
 country	Spain	40.4637	-3.7492
 country	Sri Lanka	7.8731	80.7718
@@ -14595,6 +14604,7 @@ country	United Arab Emirates	23.546651	54.065059
 country	United Kingdom	54.242833	-2.088739
 country	Uruguay	-33.0	-56.0
 country	USA	38.916963	-98.891372
+country	United States	38.916963	-98.891372
 country	Uzbekistan	41.32373	63.9528098
 country	Vanuatu	-16.5255069	168.1069154
 country	Venezuela	7.838891	-65.916409

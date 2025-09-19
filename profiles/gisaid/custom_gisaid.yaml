@@ -1,0 +1,53 @@
+custom_rules:
+  - profiles/gisaid/prepare_data_wrefs.smk
+
+metadata_fields:
+  - Isolate_Name
+  - Isolate_Id
+  - Passage_History
+  - Location
+  - Authors
+  - Originating_Lab
+  - Collection_Date
+  - Submission_Date
+renamed_metadata_fields:
+  - strain
+  - accession
+  - passage
+  - full_location
+  - authors
+  - originating_lab
+  - date
+  - date_submitted
+
+lat-longs: "config/lat_longs.tsv"
+
+segments:
+  - ha
+
+submission_date_field: date_submitted
+recency:
+  date_bins: [7, 30, 90] # subsampling recency bins in days
+  date_bin_labels: ["last week", "last month", "last quarter"]
+  upper_bin_label: older
+
+builds:
+    "custom_h3n2":
+      lineage: h3n2 # h1n1pdm, h3n2, or vic are currently supported
+      reference: "config/h3n2/{segment}/reference.fasta" # change if doing h1n1pdm or vic
+      annotation: "config/h3n2/{segment}/genemap.gff" # change if doing h1n1pdm or vic
+      tree_exclude_sites: "config/h3n2/{segment}/exclude-sites.txt" # change if doing h1n1pdm or vic
+      clades: "config/h3n2/ha/clades.tsv" # change if doing h1n1pdm or vic
+      subclades: "config/h3n2/ha/subclades.tsv" # change if doing h1n1pdm or vic
+      auspice_config: "config/h3n2/ha/auspice_config_custom.json" # change if doing h1n1pdm or vic
+      root: A/Norway/3288/2018 # change if doing h1n1pdm (A/Belgium/G0336/2019) or vic (B/Nigeria/3358/2018)
+      enable_lbi: true
+      enable_glycosylation: true
+      include: "config/h3n2/ha/cdc_reference_strains.txt" # change if doing h1n1pdm or vic
+      subsamples: # Can modify these subsampling schemes or add your own
+        global:
+            filters: "--group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region=asia'"
+        asia:
+            filters: "--group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region!=asia'"
+        vietnam:
+            filters: "--group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=bangladesh'"
