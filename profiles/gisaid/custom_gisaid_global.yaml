@@ -30,14 +30,14 @@ recency:
   upper_bin_label: older
 
 builds:
-    "custom_h3n2":
+    "custom_global_h3n2":
       lineage: h3n2 # h1n1pdm, h3n2, or vic are currently supported
       reference: "config/h3n2/{segment}/reference.fasta" # change if doing h1n1pdm or vic
       annotation: "config/h3n2/{segment}/genemap.gff" # change if doing h1n1pdm or vic
       tree_exclude_sites: "config/h3n2/{segment}/exclude-sites.txt" # change if doing h1n1pdm or vic
       clades: "config/h3n2/ha/clades.tsv" # change if doing h1n1pdm or vic
       subclades: "config/h3n2/ha/subclades.tsv" # change if doing h1n1pdm or vic
-      auspice_config: "config/h3n2/ha/auspice_config_custom.json" # change if doing h1n1pdm or vic
+      auspice_config: "config/h3n2/ha/auspice_config_custom_global.json" # change if doing h1n1pdm or vic
       root: A/Norway/3288/2018 # change if doing h1n1pdm (A/Belgium/G0336/2019) or vic (B/Nigeria/3358/2018)
       enable_lbi: true
       enable_glycosylation: true
@@ -45,8 +45,4 @@ builds:
       min_date: "2025-01-01" # only include sample sequences collected on or after this date, modify as needed
       subsamples: # Can modify these subsampling schemes or add your own
         global:
-          filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
-        oceania:
-          filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
-        australia:
-          filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=australia'"
+          filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 500 --include {include}"

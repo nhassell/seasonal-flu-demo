@@ -6,13 +6,13 @@ rule pull_clade_files:
         h3n2_ha_clades="config/h3n2/ha/clades.tsv",
         h1n1pdm_ha_clades="config/h1n1pdm/ha/clades.tsv",
         vic_ha_clades="config/vic/ha/clades.tsv",
-
         h3n2_ha_subclades="config/h3n2/ha/subclades.tsv",
         h3n2_na_subclades="config/h3n2/na/subclades.tsv",
         h1n1pdm_ha_subclades="config/h1n1pdm/ha/subclades.tsv",
         h1n1pdm_na_subclades="config/h1n1pdm/na/subclades.tsv",
         vic_ha_subclades="config/vic/ha/subclades.tsv",
         vic_na_subclades="config/vic/na/subclades.tsv",
+        out_text = "config/subclades.done"
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
         """
@@ -25,6 +25,7 @@ rule pull_clade_files:
         curl -o {output.h1n1pdm_na_subclades} "https://raw.githubusercontent.com/influenza-clade-nomenclature/seasonal_A-H1N1pdm_NA/main/.auto-generated/subclades.tsv";
         curl -o {output.vic_ha_subclades} "https://raw.githubusercontent.com/influenza-clade-nomenclature/seasonal_B-Vic_HA/main/.auto-generated/subclades.tsv";
         curl -o {output.vic_na_subclades} "https://raw.githubusercontent.com/influenza-clade-nomenclature/seasonal_B-Vic_NA/main/.auto-generated/subclades.tsv";
+        touch {output.out_text};
         """
 
 # Assumes that metadata XLS is the XLS metadata file downloaded from GISAID for
@@ -39,22 +40,14 @@ rule pull_clade_files:
 # 7. Select the first record for each unique strain name in the metadata, keeping the most recent accession.
 rule prepare_metadata:
     input:
+        rules.pull_clade_files.output.out_text,
         metadata_s="data/{lineage}/metadata.xls",
         metadata_r="data/{lineage}/references.xls",
-        h3n2_ha_clades=rules.pull_clade_files.output.h3n2_ha_clades,
-        h1n1pdm_ha_clades=rules.pull_clade_files.output.h1n1pdm_ha_clades,
-        vic_ha_clades=rules.pull_clade_files.output.vic_ha_clades,
-        h3n2_ha_subclades=rules.pull_clade_files.output.h3n2_ha_subclades,
-        h3n2_na_subclades=rules.pull_clade_files.output.h3n2_na_subclades,
-        h1n1pdm_ha_subclades=rules.pull_clade_files.output.h1n1pdm_ha_subclades,
-        h1n1pdm_na_subclades=rules.pull_clade_files.output.h1n1pdm_na_subclades,
-        vic_ha_subclades=rules.pull_clade_files.output.vic_ha_subclades,
-        vic_na_subclades=rules.pull_clade_files.output.vic_na_subclades,
     output:
         metadata_s="data/{lineage}/metadata_s.tsv",
         metadata_r="data/{lineage}/metadata_r.tsv",
         metadata_i="data/{lineage}/metadata_i.tsv",
-        metadata="data/{lineage}/metadata_f.tsv"
+        metadata="data/{lineage}/metadata.tsv"
     params:
         old_fields=",".join(config["metadata_fields"]),
         new_fields=",".join(config["renamed_metadata_fields"])
@@ -67,34 +60,19 @@ rule prepare_metadata:
             | csvtk sep -f full_location --na "N/A" --names region,country,division,location --merge --num-cols 4 --sep " / " \
             | csvtk replace -f strain -p "[^A-z0-9/\-_]" -r "" \
             | csvtk sort -k strain,accession:r \
-            | csvtk uniq -T -f strain > {output.metadata_s};
+            | csvtk uniq -T -f strain \
+            | csvtk mutate2 -n sample_type -e '"sample"' -t > {output.metadata_s};
         python3 scripts/xls2csv.py --xls {input.metadata_r} --output /dev/stdout \
             | csvtk cut -f {params.old_fields} \
             | csvtk rename -f {params.old_fields} -n {params.new_fields} \
             | csvtk sep -f full_location --na "N/A" --names region,country,division,location --merge --num-cols 4 --sep " / " \
             | csvtk replace -f strain -p "[^A-z0-9/\-_]" -r "" \
             | csvtk sort -k strain,accession:r \
-            | csvtk uniq -T -f strain > {output.metadata_r};
+            | csvtk uniq -T -f strain \
+            | csvtk mutate2 -n sample_type -e '"reference"' -t > {output.metadata_r};
         cat {output.metadata_s} <(tail -n +2 {output.metadata_r}) > {output.metadata_i};
         csvtk sort -t -k strain,accession:r {output.metadata_i} \
             | csvtk uniq -t -T -f strain > {output.metadata};
-        """
-
-rule add_sample_type:
-    input:
-        metadata=rules.prepare_metadata.output.metadata,
-        reference_type="config/{lineage}/ha/reference_type.tsv"
-    output:
-        metadata="data/{lineage}/metadata.tsv"
-    conda: "../../workflow/envs/nextstrain.yaml"
-    shell:
-        """
-        python3 scripts/join_tables_edit.py \
-        --left {input.metadata} \
-        --right {input.reference_type} \
-        --on accession \
-        --how left \
-        --output {output.metadata}
         """
 
 # Assumes that "raw sequences" FASTA is downloaded from GISAID with only the
@@ -105,7 +83,8 @@ rule add_sample_type:
 # 2. Add unique id to duplicate strain name and accession pairs.
 # 3. Sort sequences in descending order by strain and accession (latest accession comes first).
 # 4. Replace "|" character with space, changing record name to strain name only.
-# 5. Keep the first sequence for a given strain name, keeping the sequence for the most recent accession.
+# 5. Replace "U" characters in sequence with "T".
+# 6. Keep the first sequence for a given strain name, keeping the sequence for the most recent accession.
 rule prepare_sequences:
     input:
         sequences_s="data/{lineage}/raw_sequences_{segment}.fasta",
@@ -123,12 +102,14 @@ rule prepare_sequences:
             | seqkit sort -n -r \
             | seqkit replace -p "[^A-z0-9/\-_\|]" -r "" \
             | seqkit replace -p "\|" -r " " \
+            | seqkit replace -s -p "[Uu]" -r "T" \
             | seqkit rmdup > {output.sequences_s};
         seqkit replace -p " " -r "" {input.sequences_r} \
             | seqkit rename \
             | seqkit sort -n -r \
             | seqkit replace -p "[^A-z0-9/\-_\|]" -r "" \
             | seqkit replace -p "\|" -r " " \
+            | seqkit replace -s -p "[Uu]" -r "T" \
             | seqkit rmdup > {output.sequences_r};
         cat {output.sequences_s} {output.sequences_r} > {output.sequences_i};
         seqkit rmdup {output.sequences_i} \
