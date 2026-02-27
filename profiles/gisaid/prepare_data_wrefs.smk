@@ -42,11 +42,14 @@ rule prepare_metadata:
     input:
         rules.pull_clade_files.output.out_text,
         metadata_s="data/{lineage}/metadata.xls",
-        metadata_r="data/{lineage}/references.xls",
+        metadata_g="data/{lineage}/genetic.xls",
+        metadata_r="data/{lineage}/reagent.xls"
     output:
         metadata_s="data/{lineage}/metadata_s.tsv",
+        metadata_g="data/{lineage}/metadata_g.tsv",
         metadata_r="data/{lineage}/metadata_r.tsv",
         metadata_i="data/{lineage}/metadata_i.tsv",
+        metadata_ir="data/{lineage}/metadata_ir.tsv",
         metadata="data/{lineage}/metadata.tsv"
     params:
         old_fields=",".join(config["metadata_fields"]),
@@ -62,15 +65,32 @@ rule prepare_metadata:
             | csvtk sort -k strain,accession:r \
             | csvtk uniq -T -f strain \
             | csvtk mutate2 -n sample_type -e '"sample"' -t > {output.metadata_s};
-        python3 scripts/xls2csv.py --xls {input.metadata_r} --output /dev/stdout \
+        python3 scripts/xls2csv.py --xls {input.metadata_g} --output /dev/stdout \
             | csvtk cut -f {params.old_fields} \
             | csvtk rename -f {params.old_fields} -n {params.new_fields} \
             | csvtk sep -f full_location --na "N/A" --names region,country,division,location --merge --num-cols 4 --sep " / " \
             | csvtk replace -f strain -p "[^A-z0-9/\-_]" -r "" \
             | csvtk sort -k strain,accession:r \
             | csvtk uniq -T -f strain \
-            | csvtk mutate2 -n sample_type -e '"reference"' -t > {output.metadata_r};
-        cat {output.metadata_s} <(tail -n +2 {output.metadata_r}) > {output.metadata_i};
+            | csvtk mutate2 -n sample_type -e '"reference"' -t > {output.metadata_g};
+        python3 scripts/xls2csv.py --xls {input.metadata_r} --output /dev/stdout \
+            | csvtk cut -f {params.old_fields} \
+            | csvtk rename -f {params.old_fields} -n {params.new_fields} \
+            | csvtk rename -f strain -n strain_1 \
+            | csvtk mutate2 -n strain -e ' $strain_1 + "_" + $passage ' \
+            | csvtk cut -f {params.new_fields} \
+            | csvtk sep -f full_location --na "N/A" --names region,country,division,location --merge --num-cols 4 --sep " / " \
+            | csvtk replace -f strain -p "[^A-z0-9/\-_]" -r "" \
+            | csvtk sort -k strain,accession:r \
+            | csvtk uniq -T -f strain \
+            | csvtk mutate2 -n sample_type -e '"reagent"' -t > {output.metadata_r};
+        cat {output.metadata_s} > {output.metadata_i};
+        tail -n +2 {output.metadata_g} >> {output.metadata_i};
+        tail -n +2 {output.metadata_r} >> {output.metadata_i};
+        cat {output.metadata_g} <(tail -n +2 {output.metadata_r}) > {output.metadata_ir};
+        cat {output.metadata_g} <(tail -n +2 {output.metadata_r}) \
+            | csvtk sort -t -k strain,accession:r \
+            | csvtk uniq -t -T -f strain > {output.metadata_ir};
         csvtk sort -t -k strain,accession:r {output.metadata_i} \
             | csvtk uniq -t -T -f strain > {output.metadata};
         """
@@ -88,30 +108,43 @@ rule prepare_metadata:
 rule prepare_sequences:
     input:
         sequences_s="data/{lineage}/raw_sequences_{segment}.fasta",
-        sequences_r="data/{lineage}/references_{segment}.fasta"
+        sequences_g="data/{lineage}/genetic_{segment}.fasta",
+        sequences_r="data/{lineage}/reagent_{segment}.fasta",
+        metadata_ir=rules.prepare_metadata.output.metadata_ir
     output:
         sequences_s="data/{lineage}/{segment}_s.fasta",
+        sequences_g="data/{lineage}/{segment}_g.fasta",
         sequences_r="data/{lineage}/{segment}_r.fasta",
         sequences_i="data/{lineage}/{segment}_i.fasta",
-        sequences="data/{lineage}/{segment}.fasta"
+        sequences="data/{lineage}/{segment}.fasta",
+        references="config/{lineage}/{segment}/reference_strains.txt"
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
         """
         seqkit replace -p " " -r "" {input.sequences_s} \
             | seqkit rename \
-            | seqkit sort -n -r \
+            | seqkit sort -n \
             | seqkit replace -p "[^A-z0-9/\-_\|]" -r "" \
             | seqkit replace -p "\|" -r " " \
             | seqkit replace -s -p "[Uu]" -r "T" \
             | seqkit rmdup > {output.sequences_s};
-        seqkit replace -p " " -r "" {input.sequences_r} \
+        seqkit replace -p " " -r "" {input.sequences_g} \
             | seqkit rename \
-            | seqkit sort -n -r \
+            | seqkit sort -n \
             | seqkit replace -p "[^A-z0-9/\-_\|]" -r "" \
             | seqkit replace -p "\|" -r " " \
             | seqkit replace -s -p "[Uu]" -r "T" \
+            | seqkit rmdup > {output.sequences_g};
+        seqkit replace -p " " -r "" {input.sequences_r} \
+            | seqkit replace -p "\|.+" -r "" \
+            | seqkit rename \
+            | seqkit sort -n \
+            | seqkit replace -p "[^A-z0-9/\-_\|]" -r "" \
+            | seqkit replace -s -p "[Uu]" -r "T" \
             | seqkit rmdup > {output.sequences_r};
-        cat {output.sequences_s} {output.sequences_r} > {output.sequences_i};
+        cat {output.sequences_s} {output.sequences_g} {output.sequences_r} > {output.sequences_i};
         seqkit rmdup {output.sequences_i} \
-            | seqkit sort -n -r > {output.sequences};
+            | seqkit sort -n > {output.sequences};
+        csvtk -t cut -f strain {input.metadata_ir} \
+            | tail -n +2 > {output.references};
         """

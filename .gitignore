@@ -58,3 +58,7 @@ slurm-*
 # Jupyter/Altair droppings
 .ipynb_checkpoints
 geckodriver.log
+
+# R files
+.Renviron
+.Rprofile

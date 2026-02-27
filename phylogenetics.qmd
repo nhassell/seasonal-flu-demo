@@ -1,0 +1,525 @@
+---
+title: "Intro to Phylogenetics Using Nextstrain"
+subtitle: "Day 4 of Training Workshop"
+author: "Norman Hassell"
+engine: knitr
+format:
+  revealjs:
+    slide-number: true
+    code-copy: true
+    transition: fade
+    theme: dracula
+    logo: images/presentation/CDC-logo.png
+editor: visual
+execute:
+  freeze: auto
+  echo: true
+---
+
+# Section 1: Overview
+
+## Getting Started
+
+Before we get started, let's confirm your computer has `nextstrain` setup properly. Open a terminal and run the following command:
+
+```{bash}
+#| eval: false
+nextstrain setup --set-default conda
+```
+
+You should see the following output:
+
+```         
+Checking setup…
+✔ yes: operating system is supported
+✔ yes: runtime data dir doesn't have spaces
+✔ yes: runtime appears set up
+✔ yes: snakemake is installed and runnable
+✔ yes: augur is installed and runnable
+✔ yes: auspice is installed and runnable
+
+Setting default runtime to conda.
+
+All good!  Set up of conda complete.
+```
+
+## Getting Started (Cont.)
+
+If you ran into an error when running the command, go to the following [website](https://docs.nextstrain.org/en/latest/install.html#installation-steps).
+
+\
+
+Install the `nextstrain-cli` using the instructions for your operating system.
+
+\
+
+For the "Set up a Nextstrain runtime" section, follow the "Conda" instructions for your operating system. We'll go around to help if you are running into issues.
+
+## Intro to the Intro
+
+**Phylogenetics** is the study of evolutionary relationships among organisms.
+
+::::: {layout="[ 40, 60 ]"}
+::: {#first}
+![](images/presentation/02-slide-img-01.png){title="Phylogenetic tree of influenza A HAs. The 2 groups are colored cyan (group 1) and green (group 2), each of which can be further subdivided into 3 clades (H8, H9, and H12; H1, H2, H5, and H6; H11, H13, and H16) and 2 clades (H3, H4, and H14; H7, H10, and H15).  https://www.pnas.org/doi/full/10.1073/pnas.0807142105"}
+:::
+
+::: {#second}
+![](images/presentation/02-slide-img-02.png){title="Phylogenetic trees of the eight individual gene segments of influenza A(H1N1)pdm09 viruses from sub-Saharan Africa from the 2011–2013 influenza seasons. https://www.nature.com/articles/s41598-024-70023-3"}
+:::
+:::::
+
+::: notes
+**Phylogenetics** is the study of evolutionary relationships among organisms. Typically, this is shown graphically using a phylogenetic tree. In our case, we're specifically going to be analyzing the evolution of individual influenza virus subtype gene segments (primarily the HA gene segment).
+:::
+
+## Basic Components of a Phylogenetic Tree (Tips)
+
+```{r}
+#| code-fold: true
+library(ape)
+library(ggtree)
+library(ggplot2)
+library(dplyr)
+
+`%notin%` <- Negate(`%in%`)
+
+# Branch lengths are explicit so we can display them
+tree_text <- "((A:1,B:0.5,(C:1.5,D:0.5):0.5):0.5,E:0.5);"
+tree <- read.tree(text = tree_text)
+tree <- ape::root(tree, "E")
+
+# Basic ggtree base plot
+base_plot <- ggtree(tree, branch.length = "branch.length") + theme_tree2()
+
+tips_plot <- base_plot +
+  geom_tiplab(offset = 0.02) +        # tip labels
+  geom_tippoint(size = 3, shape = 21, fill = "red", colour = "black") +  # highlight tips
+  ggtitle("Tips highlighted")
+
+tips_plot
+```
+
+::: notes
+This may be content you all are already aware of but we'll go over the very basics of a phylogenetic tree. First, the tips in the tree are the terminal nodes and represent the input samples. They are the current descendant taxa being studied.
+:::
+
+## Basic Components of a Phylogenetic Tree (Nodes)
+
+```{r}
+#| code-fold: true
+nodes_plot <- base_plot +
+  geom_tiplab(offset = 0.02) +
+  # mark internal (non-tip) nodes: use aes(subset = !isTip)
+  geom_point2(aes(subset = !isTip), size = 3.5, shape = 21, fill = "green", colour = "black") +
+  ggtitle("Nodes highlighted")
+
+nodes_plot
+```
+
+::: notes
+The next component, internal nodes, represent a common ancestor from which two or more descendant lineages diverged.
+:::
+
+## Basic Components of a Phylogenetic Tree (Branches)
+
+```{r}
+#| code-fold: true
+branches_plot <- base_plot +
+  geom_tiplab(offset = 0.02) +
+  # place branch-length labels along branches; use aes(label=branch.length)
+  # round to two decimals for display
+  geom_label(aes(x = branch, label = round(branch.length, 2)), color = "red") +
+  # emphasise branches visually by increasing line width (optional)
+  # geom_segment2(aes(subset = !isTip), size = 1.2) +
+  ggtitle("Branch lengths labeled (highlighted)")
+
+branches_plot
+```
+
+::: notes
+Branches on a tree show evolutionary lineages, with the length typically representing the amount of genetic change. Branches connect nodes to descendant tips and clarify groupings.
+:::
+
+## Basic Components of a Phylogenetic Tree (Root)
+
+```{r}
+#| code-fold: true
+Ntip <- length(tree$tip.label)
+root_node <- Ntip + 1
+
+tree_df <- fortify(tree) %>%
+  mutate(branch_color = case_when(label == "E" ~ "purple",
+                              .default = "black"))
+
+root_plot <- ggtree(tree_df, aes(color=I(branch_color))) + theme_tree2() +
+  geom_tiplab(offset = 0.02) +
+  # mark the root with a star or large point
+  geom_point2(aes(subset = (node == !!root_node)), shape = 8, size = 5, colour = "purple") +
+  # optionally annotate "root" text
+  geom_text2(aes(subset = (node == !!root_node), label = "root"), hjust = -0.5, vjust = -1, size = 4, colour = "purple") +
+  geom_hilight(node=5, fill="purple", alpha=.6) +
+  geom_text2(aes(subset = (node == 5), label = "Outgroup"), hjust = -0.1, vjust = -2.0, size = 4, colour = "purple") +
+  ggtitle("Root and outgroup highlighted")
+
+root_plot
+```
+
+::: notes
+Lastly, phylogenetic trees attempting to show descendants from a common ancestor, are rooted. The root of the tree represents the last common ancestor of all taxa in the tree. Trees are typically rooted using an outgroup that has a known relative that diverged earlier, in this example, taxa "E".
+:::
+
+## Types of Trees
+
+::::: {layout="[ 50, 50 ]"}
+<div>
+
+![Nextstrain Tree in Divergence Display](images/presentation/04-divergence-tree.png)
+
+</div>
+
+<div>
+
+![Nextstrain Tree in Time Display](images/presentation/04-time-tree.png)
+
+</div>
+:::::
+
+::: notes
+The most common type of tree you'll typically see are divergence scaled trees, where the branch distance represents direct genetic distance of samples to each other or the tree's root. This is shown by the tree on the left. Another type of tree is a time scaled tree, where the branches are instead representative of estimated time divergence. This is shown by the tree on the right.
+:::
+
+## Molecular Clock Concept
+
+![](images/presentation/05-molecular-clock.png)
+
+::: notes
+A core concept behind computing time scaled trees is the molecular clock. Generally this concept is the idea that genetic mutations accumulate at a roughly constant rate over time, and because of this the genetic difference between taxa can be used to estimate how long ago they shared a common ancestor, given the date information associated with each taxa.
+:::
+
+## The Concept of Clades
+
+**Clades** are the fundamental grouping of phylogenetic trees. They are defined as a monophyletic group of taxa in a tree that includes a single common ancestor and all its descendants.
+
+![](images/presentation/06-clade-definition.png "Accessed from https://evolution.berkeley.edu/teach-resources/clades-1-of-2-definition/"){.lightbox width="500"}
+
+::: notes
+Clades can be just single branches from a tree, or contain numerous branches. But they are often used for tracing ancestry and epidemic spread in the context of virology.
+:::
+
+## Clades in Seasonal Influenza {.smaller}
+
+The seasonal flu research community recently implemented a [nomenclature and clade proposal system](https://onlinelibrary.wiley.com/doi/10.1111/irv.70230) for tracking important emerging clades. These correspond to the "subclade" designations from [Nextclade](https://clades.nextstrain.org/) outputs.
+
+![](images/presentation/07-subclades.png){width="1167"}
+
+## Clades in Seasonal Influenza (cont.)
+
+Defining a subclade in Nextstrain ([`augur clades` command](https://docs.nextstrain.org/projects/augur/en/stable/usage/cli/clades.html)):
+
+::::: columns
+::: {.column width="50%"}
+| clade | gene | site | alt |
+|:------|:-----|:-----|:----|
+| A     | HA1  | 45   | N   |
+| A     | HA1  | 48   | I   |
+| A     | nuc  | 473  | T   |
+:::
+
+::: {.column width="50%"}
+| clade | gene  | site  | alt |
+|:------|:------|:------|:----|
+| K     | clade | J.2.4 |     |
+| K     | HA1   | 2     | N   |
+| K     | HA1   | 144   | N   |
+| K     | HA1   | 158   | D   |
+| K     | HA1   | 160   | K   |
+| K     | HA1   | 173   | R   |
+:::
+:::::
+
+::: notes
+Subclades are defined in Nextstrain builds using a four column tab separated file. With the columns "clade", "gene", "site", and "alt". The "clade" column is the desired definition of the clade to be annotated, the "gene" column is the site level to be evaluated (specific protein, nucleotide, or clade), the "site" column is the numeric site or parent clade required, and the "alt" column is the nucleotide or amino acid present at the given site. In essence, we are listing the required ancestral changes for the originating subclade node.
+:::
+
+## Clades in Seasonal Influenza (cont.) {.smaller}
+
+Subclade K example:
+
+::::: columns
+::: {.column width="30%"}
+| clade | gene  | site  | alt |
+|:------|:------|:------|:----|
+| K     | clade | J.2.4 |     |
+| K     | HA1   | 2     | N   |
+| K     | HA1   | 144   | N   |
+| K     | HA1   | 158   | D   |
+| K     | HA1   | 160   | K   |
+| K     | HA1   | 173   | R   |
+:::
+
+::: {.column width="70%"}
+![](images/presentation/08-subclade-k.png){fig-align="right" width="545"}
+:::
+:::::
+
+::: notes
+As you can see from this example showing subclade K and its clade definitions to the left. The ancestral changes we've defined are reflected in the tree branching leading up to subclade K. Manual subclade definitions could also be added to highlight a non-official clade of interest in a Nextstrain build.
+:::
+
+# Section 2: Tree Building Overview
+
+Quick break.
+
+## Phylogenetic Tree Building Steps
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: center
+flowchart TD
+    A[Sequence selection and filtering]
+    B[Multiple sequence alignment]
+    C[Model selection]
+    D[Tree inference]
+    E[Tree evaluation and visualization]
+
+    A -->  |The data that is <br/> included is **important**| B
+    B --> C 
+    C --> |Also important for <br/> proper tree contruction| D
+    D --> E
+```
+
+::: notes
+The overall steps of phylogenetic tree building are:
+
+1.  Sequence selection and filtering. This is one of the most critical steps in tree building and is often not as heavily considered as it should be. It is very central to the focus of the analysis.
+2.  Multiple sequence alignment
+3.  Model selection. This is also important for tree construction. An inappropriate model selection can produce inaccurate topologies and lead to false conclusions from your data.
+4.  Tree inference. The algorithm used for inference of the tree can impact the topology. There are many methods depending on your overall goals. A neighbor joining algorithm may be sufficient for a quick assessment, or a maximum likelihood method for more robust statistical support, or a Bayesian method for robust phylogenetic reconstruction and divergence time estimation.
+5.  Tree evaluation and visualization. Lastly, understanding and interpreting your tree by visualization is critical to hypothesis testing and evolutionary analysis.
+:::
+
+## Sequence Selection
+
+::::: {layout="[ 50, 50 ]"}
+<div>
+
+![Garbage in](images/presentation/garbage-in.png)
+
+</div>
+
+<div>
+
+![Garbage out](images/presentation/garbage-out.png)
+
+</div>
+:::::
+
+::: notes
+On a very basic level, the importance of sequence selection for a tree
+cannot be understated. Ultimately a tree is a hypothesis, using
+sequences of poor quality or not tailoring your data to a particular 
+research question will give you poor results. Garbage in. Garbage out.
+:::
+
+## Sequence Selection {.r-fit-text}
+
+When starting the process of building a tree:
+
+::: {.incremental}
+-   Consensus sequence data quality (not just NGS coverage)
+
+-   What is the question you are trying to address?
+
+    -   Global surveillence?
+
+    -   Targeted regional analysis?
+
+    -   Country specific questions?
+
+    -   Timing of a newly emerged variant?
+
+        -   *Be especially careful here. This requires intensive analysis and scrutiny. Preferably using bayesian methods.*
+:::
+        
+::: notes
+When starting the process of building a tree there are many things to consider.
+But the primary actions should revolve around including sequences with high 
+data quality and making sure your sequence selection is appropriate for the question 
+you are trying to address. Selection will be drastically different whether your 
+question is focused around global surveillance, a targeted regional analysis,
+a country specific question, or the timing of a newly emerged variant. This 
+last question requires especially careful consideration in dataset selection and
+would be most appropriate to complete using Bayesian methods, such as the BEAST
+software suite.
+:::
+
+## Multiple Sequence Alignment (MSA)
+
+![](images/presentation/03-slide-img.png)
+
+::: notes
+After appropriate filtering and sampling, there is the process of generating a multiple sequence alignment (or MSA). There are many different multiple sequence alignment algorithms and each have their own advantages and disadvantages.
+:::
+
+## MSA Algorithms
+
+Examples of MSA software:
+
+-   [CLUSTAL Omega](https://www.ebi.ac.uk/jdispatcher/msa/clustalo)
+-   [MAFFT](https://mafft.cbrc.jp/alignment/server/index.html)
+-   [MUSCLE](https://github.com/rcedgar/muscle)
+-   [**nextclade** aligner (previously nextalign)](https://github.com/nextstrain/nextclade?tab=readme-ov-file)
+
+::: notes
+Some common examples of MSA alignment software are CLUSTAL, MAFFT, MUSCLE, and the nextclade aligner. Nextclade is the default aligner used by nextstrain in their core pathogen workflows. MAFFT is also available as an aligner installed as part of the nextstrain environment.
+Generally, in Nextstrain builds we are aligning the data to a specific reference sequence rather than doing a true global sequence alignment. This keeps numbering consistent in relation to the reference, allowing better contextualization of analysis.
+:::
+
+## Model Selection
+
+Assuming nucleotide sequence data as input:
+
+-   Jukes-Cantor (simplest model)
+-   HKY
+-   TN93
+-   GTR (Model implemented in Nextstrain flu pipelines)
+
+::: notes
+Assuming nucleotide sequence data as input, there are a number of substitution models available for tree inference. Jukes-Cantor is the simplest model and assumes equal base frequencies and mutation rates. HKY and TN93 models distinguish between the rate of transitions and transversions, with different model specific parameters for each. The GTR model is the most general neutral, independent, finite-sites, time-reversible model possible. GTR is also the model implemented in Nexstrain flu pipelines.
+:::
+
+## Tree Inference - Algorithms
+
+Distance Based:
+
+-   Neighbor joining
+-   UPGMA
+
+Character Based:
+
+-   Maximum Parsimony
+-   Maximum Likelihood (used in Nextstrain pipelines)
+-   Bayesian Inference
+
+::: notes
+When inferring a tree, there are two major groups of algorithms. Distance based and character 
+based. Distance based algorithms such as neighbor joining and UPGMA construct trees by 
+converting data into a matrix of pairwise evolutionary distances. This can be useful for quick 
+assessments of data where intense accuracy is not needed. Character based methods are generally
+preferred, with the most common implementation being maximum likelihood. With modern computing
+maximum likelihood has a good balance between accuracy and speed. Bayesian 
+inference are the most intensive method, often requiring days to run a medium sized
+data set to completion.
+:::
+
+## Tree Inference - Software
+
+-   [MEGA](https://www.megasoftware.net/)
+-   [RAxML](https://cme.h-its.org/exelixis/web/software/raxml/)
+-   [FastTree](https://morgannprice.github.io/fasttree/)
+-   [IQ-TREE (Nextstrain Default)](https://iqtree.github.io/)
+
+::: notes
+Common software implementing tree building methods are MEGA, which provides a 
+robust toolkit in a graphical user interface and other command line tools 
+such as RAxML, FastTree, and IQ-TREE. With IQ-TREE being the maximum likelihood 
+implemented in Nexstrain tree building defaults.
+:::
+
+## Tree Evaluation and Visualization
+
+-   [Nextstrain (auspice)](https://docs.nextstrain.org/projects/auspice/en/stable/)
+-   [auspice.us (browser based auspice)](https://auspice.us/)
+-   [IcyTree (browser based)](https://icytree.org/)
+-   [FigTree](https://tree.bio.ed.ac.uk/software/figtree/)
+-   [ITOL](https://itol.embl.de/)
+-   [Dendroscope](https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/)
+-   Programmatic libraries:
+    -   [ETE Toolkit](https://etetoolkit.org/)
+    -   [ggtree](https://guangchuangyu.github.io/software/ggtree/)
+
+::: notes
+After building a tree there are a number of software options available to view the tree.
+Although we'll be using the auspice software from Nextstrain to view our trees, it is 
+good to have other software on hand for quick inspection, annotation, format conversion,
+or figure generation from tree files. I prefer FigTree for this. There's also programmatic
+libraries in python and R which can be very helpful for publication quality figures.
+:::
+
+## Intro to Nextstrain
+
+[Nextstrain](https://docs.nextstrain.org/en/latest/learn/about.html#) is an open source toolkit for analyzing and visualizing pathogen genomic data.
+
+The two core parts of Nextstrain are:
+
+-   Augur (modular bioinformatics toolkit)
+-   Auspice (browser based vizualization)
+
+::: notes
+Now that we've gone through the basics of tree building, we'll go over Nextstrain.
+Nextstrain is an open source toolkit for analyzing and visualizing pathogen genomic
+data. The two main components of the software are augur and auspice. Where augur is
+a packaged toolkit of bioinformatics tools and auspice is the web browser based
+visualization software from the output of augur.
+:::
+
+## Nextstrain process overview
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: center
+
+flowchart TB
+    subgraph Inputs
+        direction LR
+        A[sequences.fasta]
+        B[metadata.tsv]
+    end
+
+    subgraph Augur
+    direction LR
+        C(filter)
+        D(align)
+        E(tree)
+        F(refine)
+        G(export)
+        C --> D
+        D --> E
+        E --> F
+        F --> G
+    end
+
+    Inputs --> Augur
+    Augur --> H[Build Dataset]
+    H --> I[Auspice]
+
+     %% Styling
+    classDef input fill:#ffffff,stroke:#555,rx:12,ry:12;
+    classDef step fill:#bfe3ff,stroke:#3b82c4,rx:14,ry:14;
+    classDef output fill:#ffffff,stroke:#555,rx:12,ry:12;
+    classDef final fill:#b9f5b0,stroke:#2e7d32,rx:14,ry:14;
+
+    class A,B input;
+    class C,D,E,F,G step;
+    class H output;
+    class I final;
+```
+
+::: notes
+The essential components of a Nextstrain workflow are shown in this diagram. Generally,
+as input we are providing a sequence file in fasta format and a columnar data file
+associated with our sequence file. These files are then taken through the augur pipeline.
+First, the "filter" step is used to sample data by defined criteria. Then the filtered 
+sequence data is aligned to a provided reference in the "align" step. A tree is then built
+from this alignment using the "tree" command. The tree is then processed through the "refine"
+step, which refines the tree using sequence metadata and produces a time scaled phylogeny.
+All of the essential files needed for a Nextstrain build are then processed in the 
+export step, where the files are combined into one or more JSON files. These JSON files
+form a "build" data set, which can then be directly viewed in auspice.
+:::
+
+# Section 3: Nextstrain Build Exercise
+
+Click on the following [link](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#demo-build-walkthrough)
+which will direct you to the exercise we will be going through together.
