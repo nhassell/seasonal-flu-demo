@@ -1,5 +1,5 @@
 {
-  "title": "Real-time tracking of influenza A/H3N2 evolution - Vietnam focused subsampling",
+  "title": "Real-time tracking of influenza A/H3N2 evolution - Subsampling With no Reference Sequences",
   "maintainers": [
     {"name": "Norman Hassell", "url": "https://github.com/nhassell"}
   ],
@@ -131,7 +131,7 @@
       "type": "categorical"
     },
     {
-      "key": "reference_type",
+      "key": "sample_type",
       "title": "Sample Type",
       "type": "categorical"
     }
@@ -143,7 +143,8 @@
   ],
   "display_defaults": {
     "map_triplicate": true,
-    "color_by": "clade_membership"
+    "color_by": "subclade",
+    "branch_label": "Subclade"
   },
   "filters": [
     "clade_membership",

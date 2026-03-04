@@ -169,6 +169,22 @@ root_plot
 Lastly, phylogenetic trees attempting to show descendants from a common ancestor, are rooted. The root of the tree represents the last common ancestor of all taxa in the tree. Trees are typically rooted using an outgroup that has a known relative that diverged earlier, in this example, taxa "E".
 :::
 
+## Notes on Tree Rooting
+
+Conceptually, tree rooting should be done:
+
+- Using a known outgroup (a taxon closely related to, but outside, the study group) to place the ancestor 
+- Or using midpoint rooting, which sets the root at the midpoint of the longest path between any two taxa 
+
+Outgroup rooting provides a more robust evolutionary history, and is generally preferred.
+
+::: notes
+Again, to reiterate. Conceptually tree rooting should be done by the following 
+guiding principles of using a known outgroup to place the ancestor or by midpoint rooting
+if you are unsure of the ancestor. Outgroup rooting provides a more robust evolutionary 
+history, and is generally preferred.
+:::
+
 ## Types of Trees
 
 ::::: {layout="[ 50, 50 ]"}
@@ -265,6 +281,74 @@ Subclade K example:
 
 ::: notes
 As you can see from this example showing subclade K and its clade definitions to the left. The ancestral changes we've defined are reflected in the tree branching leading up to subclade K. Manual subclade definitions could also be added to highlight a non-official clade of interest in a Nextstrain build.
+:::
+
+## Subclades vs. Lineages (Pango 🤦)
+
+Influenza subclades are **not** equivalent to 
+[Pango (SARS-CoV-2) lineages](https://web.archive.org/web/20240116214047/https://www.pango.network/how-does-the-system-work/what-are-pango-lineages/).
+
+\
+
+Pango lineage designations only requirement is a group of viruses having a shared ancestry.
+
+\
+
+Lineage proposals are through [public submission](https://github.com/cov-lineages/pango-designation/tree/master?tab=readme-ov-file)
+
+This has led to the designation of 5.7K+ lineages. 🤯
+
+::: notes
+Although seasonal influenza subclades might look topically similar to pango 
+lineages for SARS-CoV-2 they are not equivalent. The only requirement for the designation
+of a pango lineage is a group of viruses that ahve a shared ancestry. This can be from
+a single synonymous mutation that has no affect of the viral protein structure. This 
+unrestricted system of lineage designation has led to the designation of more than 
+5,700 lineages. Along with a complete alphabet soup of lineage names.
+:::
+
+## Subclade Proposal Process {.smaller}
+
+Subclade proposal criteria:
+
+1. Size: large groups should have a higher priority for designation.
+2. Divergence: the more mutations have accumulated relative to the break point of the parent clade, the higher the priority of a novel clade
+3. Specific mutations: Ideally, breakpoints sit on long branches with significant mutation. Such mutations will be better defined for well studied segments/genomes.
+
+Each of these components feeds into the calculation of normalized branch scores across a
+phylogenetic tree.
+
+\
+
+A threshold score of 1.0 is set. 
+
+::: notes
+There are three criteria for subclade proposal. Size, with larger groups having higher
+priority of desigation. Divergence, with more mutations accumatlated, the higher the 
+priority. And specific mutations of signifigance. These muations get weighted higher
+for designation. 
+
+Each of these components feeds into the calculation of normalized branch scores accross
+the tree, with a threshold value of one set. This chosen threshold mean that any one score
+criteria alone will not trigger a new lineage, but together, the threshold can be passed with 
+a single HA1 mutation.
+:::
+
+## Subclade Naming
+
+- The system of subclade naming uses a variation of the Pango nomenclature system.^[[The full publication on the nomenclature system.](https://onlinelibrary.wiley.com/doi/full/10.1111/irv.70230)]
+- Capitol letters are used as aliases and numbers separated by periods for the retained
+part of the hierarchical name.
+- Shortening (aliasing) of names after three hierarchical levels 
+(i.e. D for C.1.1.1).
+- However, a new alias may be given earlier in the case of a rapid 
+expansion or special designation.
+
+::: notes
+The system
+Shortening (aliasing) of names generally occurs after three hierarchical levels 
+(i.e. D for C.1.1.1), but a new alias may be given earlier in the case of a rapid 
+expansion or special designation.
 :::
 
 # Section 2: Tree Building Overview
@@ -523,3 +607,180 @@ form a "build" data set, which can then be directly viewed in auspice.
 
 Click on the following [link](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#demo-build-walkthrough)
 which will direct you to the exercise we will be going through together.
+
+# Section 4: Overview of Nextstrain Features and Navigation
+
+We'll go over features of your build and navigate it together.
+
+::: notes
+Go through the Nextstrain build navigation and features. Including basic interaction, display
+panels, layouts, coloring, filtering, branch labels, confidence intervals, streamtrees, exploding tree.
+:::
+
+# Section 5: Communicating Results Using Nextstrain Narratives
+
+## Introduction to Nextstrain Narratives
+
+[Nextstrain narratives](https://docs.nextstrain.org/en/latest/tutorials/narratives-how-to-write.html) are markdown (.md) files that allow the communication of 
+results interactively in a slide-like format.
+
+\
+
+Click on the link above for detailed documentation on narratives.
+
+\
+
+For an example of a narrative, take a look at the [Twenty years of West Nile virus](https://nextstrain.org/narratives/twenty-years-of-WNV) 
+narrative.
+
+## Components of a Narrative: Header {.smaller}
+
+Open the example narrative file `/profiles/gisaid/custom.md` in VS Code.
+\
+
+At the top of the file is the narrative header:
+
+```{.markdown}
+---
+title: Custom Local Hosted Narrative
+authors: Norman Hassell
+date: "2026-03-02"
+dataset: "https://nextstrain.org/custom/h3n2/ha"
+abstract: "
+Custom narrative of custom build
+"
+---
+```
+
+For local builds, you will have the prefix 
+`https://nextstrain.org` followed by your build file name with underscores replaced 
+by the `/` character (ie. `custom_h3n2_ha.json` dataset becomes
+`https://nextstrain.org/custom/h3n2/ha`)
+
+::: notes
+Open the example narrative file in VS Code. At the top of the file is the narrative header.
+This header contains the title of your narrative, the authors, the data set link,
+and the abstract that you would like displayed for your narrative.
+:::
+
+## Components of a Narrative: Header (Result)
+
+![](images/presentation/09-narrative-intro.png)
+
+## Components of a Narrative: Basic Slides
+
+Basic slides are set up by providing copied links as first level headers:
+
+```{.markdown .code-overflow-wrap}
+# [Custom Dataset Slide](https://nextstrain.org/custom/h3n2/ha?d=tree,map,frequencies&f_sample_type=sample&p=grid)
+
+Example of a basic slide view.
+
+The slide is filtered to a "Sample Type" of "sample".
+```
+
+## Components of a Narrative: Basic Slides (Result)
+
+![](images/presentation/10-basic-slide.png)
+
+## Components of a Narrative: Animations
+
+Timeline animations can be used in narratives by copying
+the link associated with the animation. 
+
+The link will briefly show after clicking the "Play ▶️"
+button underneath the "Date Range" toolbar.
+
+```{.markdown .code-overflow-wrap}
+# [Custom Dataset Animations](https://nextstrain.org/custom/h3n2/ha?animate=2024-06-04,2025-12-20,0,0,30000&d=map&f_sample_type=sample&p=full)
+
+Animations can be captured.
+```
+
+## Components of a Narrative: Animations (Result)
+
+![](images/presentation/2026-03-03 15.30.55.gif)
+
+## Components of a Narrative: Images
+
+Images can be imbedded into the narrative sidebar or main display
+from direct links or [base64 conversion](https://www.base64-image.de/).
+
+````{.markdown .code-overflow-wrap}
+# [Image Embedding](https://nextstrain.org/custom/h3n2/ha)
+
+Images can be embedded from the web in the side panel.
+
+![](https://www.esrf.fr/files/live/sites/www/files/news/general-old/general-2009/Influenza-Virus.jpg)
+
+```auspiceMainDisplayMarkdown
+### Or in the main body display via the `auspiceMainDisplayMarkdown` section.
+
+For main body markdown display.
+
+![Flu](https://www.embl.org/news/wp-content/uploads/2020/04/INFLUENZA_EDIT.jpg)
+```
+````
+
+## Components of a Narrative: Images (Results)
+
+![](images/presentation/11-image-embed.png)
+
+## Narratives Continued
+
+Normal features of markdown such as: 
+
+- Tables
+- Lists 
+- Text formatting
+- HTML embedding 
+
+Can all be used in both the narrative side panel and main display.
+\
+
+Again, the main display requires the `auspiceMainDisplayMarkdown` block for use.
+
+
+## Narrative Exercise
+
+Before moving on to the exercise open a new terminal in the  
+`seasonal-flu-demo` folder and enter into a new nextstrain shell session:
+
+```{.bash}
+nextstrain shell .
+```
+
+Then, run another build using the following command:
+
+```{.bash}
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_global.yaml
+```
+
+Repeat this process for a third build.
+
+Open a new terminal, enter a nextstrain shell, and execute the following:
+```{.bash}
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_norefs.yaml
+```
+
+## Narrative Exercise {.smaller}
+
+::: {.incremental}
+Develop a narrative walking through your current build
+focusing on viruses circulating in Oceania/Australia (`custom_h3n2_ha`).
+
+- What were the most prominent subclades for samples?
+- What subclade is exhibiting the highest local branching index (LBI)?
+- From the identified subclade with the highest LBI, what is the estimated 
+emergence date and range?
+- What regions is this subclade present in?
+- What is the rate calculation for the tree overall vs. the rate for the subclade?
+- Are there any reagent viruses in this subclade? Highlight them.
+- Add another narrative slide of your choice, highlighting something you've found.
+- Close out your narrative with a summary slide.
+:::
+
+# Section 6: Build Comparisons
+
+We'll take some time to compare the three different
+builds we've created.

@@ -55,7 +55,7 @@ but it's good to be generally aware of what components there are behind the hood
 ## Demo Build Walkthrough
 
 For this demo build we'll be following much of the [Quickstart with GISAID data section](https://github.com/nhassell/seasonal-flu-demo/tree/master?tab=readme-ov-file#quickstart-with-gisaid-data)
-described in the `README.md`, we'll be doing some modifications to create a build with preferential sampling of Asia/Bangladesh and adding
+described in the `README.md`, we'll be doing some modifications to create a build with preferential sampling of Oceania/Australia and adding
 in current reference viruses (reagent/genetic) for H3N2. This should give some general ideas of how to create a custom build directly from GISAID downloads.
 
 Start by cloning this repository to a directory of your choice that is easy for you to find.
@@ -194,6 +194,38 @@ Leave all other sections at the default values.
 
 Select the "Download" button.
 Copy the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (2)`) as `reagent_ha.fasta` in the `data/h3n2/` folder.
+
+### Customizing Basic Build Elements
+
+For builds, page text and build component configuration are hosted within config JSONs. This builds config file is located at:
+
+```
+config/h3n2/ha/auspice_config_custom.json
+```
+
+Open the file and edit the `name` and `url` fields in the `maintainers` section to your name and GitHub home page url.
+
+```
+{
+  "title": "Real-time tracking of influenza A/H3N2 evolution - Custom focused subsampling",
+  "maintainers": [
+    {"name": "Norman Hassell", "url": "https://github.com/nhassell"}
+  ],
+```
+
+If you look further down at the JSON file, you'll see several other components. These include:
+
+- `build_url`: the url hosting your build code.
+- `colorings`: the colorings of your build, you can add/subtract components of coloring available from elements of your provided metadata.
+- `geo_resolutions`: geographic you want to make available for your build.
+- `display_defaults`: options for the auspice viewer display defaults for your build.
+- `filters`: fields from your metadata you would like to make available for clickable text filters.
+- `panels`: the display panels you would lke available.
+
+See the [Nextstrain documentation](https://docs.nextstrain.org/projects/auspice/en/stable/advanced-functionality/view-settings.html) on this
+for more details.
+
+We'll leave the rest of these options unchanged, as the defaults are appropriate for the analysis we are making.
 
 ### Running the Custom Workflow
 

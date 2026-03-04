@@ -416,6 +416,28 @@ All good!  Set up of conda complete.</code></pre>
           display:block!important;
       }</style></aside>
 </section>
+<section id="notes-on-tree-rooting" class="slide level2">
+<h2>Notes on Tree Rooting</h2>
+<p>Conceptually, tree rooting should be done:</p>
+<ul>
+<li>Using a known outgroup (a taxon closely related to, but outside, the study group) to place the ancestor</li>
+<li>Or using midpoint rooting, which sets the root at the midpoint of the longest path between any two taxa</li>
+</ul>
+<p>Outgroup rooting provides a more robust evolutionary history, and is generally preferred.</p>
+<aside class="notes">
+<p>Again, to reiterate. Conceptually tree rooting should be done by the following guiding principles of using a known outgroup to place the ancestor or by midpoint rooting if you are unsure of the ancestor. Outgroup rooting provides a more robust evolutionary history, and is generally preferred.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="types-of-trees" class="slide level2">
 <h2>Types of Trees</h2>
 <div class="quarto-layout-panel" data-layout="[ 50, 50 ]">
@@ -664,7 +686,80 @@ All good!  Set up of conda complete.</code></pre>
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
+</section>
+<section id="subclades-vs.-lineages-pango" class="slide level2">
+<h2>Subclades vs.&nbsp;Lineages (Pango 🤦)</h2>
+<p>Influenza subclades are <strong>not</strong> equivalent to <a href="https://web.archive.org/web/20240116214047/https://www.pango.network/how-does-the-system-work/what-are-pango-lineages/">Pango (SARS-CoV-2) lineages</a>.</p>
+<p><br>
+</p>
+<p>Pango lineage designations only requirement is a group of viruses having a shared ancestry.</p>
+<p><br>
+</p>
+<p>Lineage proposals are through <a href="https://github.com/cov-lineages/pango-designation/tree/master?tab=readme-ov-file">public submission</a></p>
+<p>This has led to the designation of 5.7K+ lineages. 🤯</p>
+<aside class="notes">
+<p>Although seasonal influenza subclades might look topically similar to pango lineages for SARS-CoV-2 they are not equivalent. The only requirement for the designation of a pango lineage is a group of viruses that ahve a shared ancestry. This can be from a single synonymous mutation that has no affect of the viral protein structure. This unrestricted system of lineage designation has led to the designation of more than 5,700 lineages. Along with a complete alphabet soup of lineage names.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="subclade-proposal-process" class="slide level2 smaller">
+<h2>Subclade Proposal Process</h2>
+<p>Subclade proposal criteria:</p>
+<ol type="1">
+<li>Size: large groups should have a higher priority for designation.</li>
+<li>Divergence: the more mutations have accumulated relative to the break point of the parent clade, the higher the priority of a novel clade</li>
+<li>Specific mutations: Ideally, breakpoints sit on long branches with significant mutation. Such mutations will be better defined for well studied segments/genomes.</li>
+</ol>
+<p>Each of these components feeds into the calculation of normalized branch scores across a phylogenetic tree.</p>
+<p><br>
+</p>
+<p>A threshold score of 1.0 is set.</p>
+<aside class="notes">
+<p>There are three criteria for subclade proposal. Size, with larger groups having higher priority of desigation. Divergence, with more mutations accumatlated, the higher the priority. And specific mutations of signifigance. These muations get weighted higher for designation.</p>
+<p>Each of these components feeds into the calculation of normalized branch scores accross the tree, with a threshold value of one set. This chosen threshold mean that any one score criteria alone will not trigger a new lineage, but together, the threshold can be passed with a single HA1 mutation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="subclade-naming" class="slide level2">
+<h2>Subclade Naming</h2>
+<ul>
+<li>The system of subclade naming uses a variation of the Pango nomenclature system.<sup>1</sup></li>
+<li>Capitol letters are used as aliases and numbers separated by periods for the retained part of the hierarchical name.</li>
+<li>Shortening (aliasing) of names after three hierarchical levels (i.e.&nbsp;D for C.1.1.1).</li>
+<li>However, a new alias may be given earlier in the case of a rapid expansion or special designation.</li>
+</ul>
+<aside class="notes">
+<p>The system Shortening (aliasing) of names generally occurs after three hierarchical levels (i.e.&nbsp;D for C.1.1.1), but a new alias may be given earlier in the case of a rapid expansion or special designation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://onlinelibrary.wiley.com/doi/full/10.1111/irv.70230">The full publication on the nomenclature system.</a></p></li></ol></aside></section></section>
 <section>
 <section id="section-2-tree-building-overview" class="title-slide slide level1 center">
 <h1>Section 2: Tree Building Overview</h1>
@@ -1008,8 +1103,165 @@ All good!  Set up of conda complete.</code></pre>
 <section id="section-3-nextstrain-build-exercise" class="title-slide slide level1 center">
 <h1>Section 3: Nextstrain Build Exercise</h1>
 <p>Click on the following <a href="https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#demo-build-walkthrough">link</a> which will direct you to the exercise we will be going through together.</p>
+</section>
+
+<section id="section-4-overview-of-nextstrain-features-and-navigation" class="title-slide slide level1 center">
+<h1>Section 4: Overview of Nextstrain Features and Navigation</h1>
+<p>We’ll go over features of your build and navigate it together.</p>
+<aside class="notes">
+<p>Go through the Nextstrain build navigation and features. Including basic interaction, display panels, layouts, coloring, filtering, branch labels, confidence intervals, streamtrees, exploding tree.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section>
+<section id="section-5-communicating-results-using-nextstrain-narratives" class="title-slide slide level1 center">
+<h1>Section 5: Communicating Results Using Nextstrain Narratives</h1>
 
 </section>
+<section id="introduction-to-nextstrain-narratives" class="slide level2">
+<h2>Introduction to Nextstrain Narratives</h2>
+<p><a href="https://docs.nextstrain.org/en/latest/tutorials/narratives-how-to-write.html">Nextstrain narratives</a> are markdown (.md) files that allow the communication of results interactively in a slide-like format.</p>
+<p><br>
+</p>
+<p>Click on the link above for detailed documentation on narratives.</p>
+<p><br>
+</p>
+<p>For an example of a narrative, take a look at the <a href="https://nextstrain.org/narratives/twenty-years-of-WNV">Twenty years of West Nile virus</a> narrative.</p>
+</section>
+<section id="components-of-a-narrative-header" class="slide level2 smaller">
+<h2>Components of a Narrative: Header</h2>
+<p>Open the example narrative file <code>/profiles/gisaid/custom.md</code> in VS Code.<br>
+</p>
+<p>At the top of the file is the narrative header:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href=""></a><span class="co">---</span></span>
+<span id="cb7-2"><a href=""></a><span class="an">title:</span><span class="co"> Custom Local Hosted Narrative</span></span>
+<span id="cb7-3"><a href=""></a><span class="an">authors:</span><span class="co"> Norman Hassell</span></span>
+<span id="cb7-4"><a href=""></a><span class="an">date:</span><span class="co"> "2026-03-02"</span></span>
+<span id="cb7-5"><a href=""></a><span class="an">dataset:</span><span class="co"> "https://nextstrain.org/custom/h3n2/ha"</span></span>
+<span id="cb7-6"><a href=""></a><span class="an">abstract:</span><span class="co"> "</span></span>
+<span id="cb7-7"><a href=""></a><span class="co">Custom narrative of custom build</span></span>
+<span id="cb7-8"><a href=""></a><span class="co">"</span></span>
+<span id="cb7-9"><a href=""></a><span class="co">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For local builds, you will have the prefix <code>https://nextstrain.org</code> followed by your build file name with underscores replaced by the <code>/</code> character (ie. <code>custom_h3n2_ha.json</code> dataset becomes <code>https://nextstrain.org/custom/h3n2/ha</code>)</p>
+<aside class="notes">
+<p>Open the example narrative file in VS Code. At the top of the file is the narrative header. This header contains the title of your narrative, the authors, the data set link, and the abstract that you would like displayed for your narrative.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="components-of-a-narrative-header-result" class="slide level2">
+<h2>Components of a Narrative: Header (Result)</h2>
+
+<img data-src="images/presentation/09-narrative-intro.png" class="r-stretch"></section>
+<section id="components-of-a-narrative-basic-slides" class="slide level2">
+<h2>Components of a Narrative: Basic Slides</h2>
+<p>Basic slides are set up by providing copied links as first level headers:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href=""></a><span class="fu"># [Custom Dataset Slide](https://nextstrain.org/custom/h3n2/ha?d=tree,map,frequencies&amp;f_sample_type=sample&amp;p=grid)</span></span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a>Example of a basic slide view.</span>
+<span id="cb8-4"><a href=""></a></span>
+<span id="cb8-5"><a href=""></a>The slide is filtered to a "Sample Type" of "sample".</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="components-of-a-narrative-basic-slides-result" class="slide level2">
+<h2>Components of a Narrative: Basic Slides (Result)</h2>
+
+<img data-src="images/presentation/10-basic-slide.png" class="r-stretch"></section>
+<section id="components-of-a-narrative-animations" class="slide level2">
+<h2>Components of a Narrative: Animations</h2>
+<p>Timeline animations can be used in narratives by copying the link associated with the animation.</p>
+<p>The link will briefly show after clicking the “Play ▶️” button underneath the “Date Range” toolbar.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href=""></a><span class="fu"># [Custom Dataset Animations](https://nextstrain.org/custom/h3n2/ha?animate=2024-06-04,2025-12-20,0,0,30000&amp;d=map&amp;f_sample_type=sample&amp;p=full)</span></span>
+<span id="cb9-2"><a href=""></a></span>
+<span id="cb9-3"><a href=""></a>Animations can be captured.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="components-of-a-narrative-animations-result" class="slide level2">
+<h2>Components of a Narrative: Animations (Result)</h2>
+
+<img data-src="images/presentation/2026-03-03%2015.30.55.gif" class="r-stretch"></section>
+<section id="components-of-a-narrative-images" class="slide level2">
+<h2>Components of a Narrative: Images</h2>
+<p>Images can be imbedded into the narrative sidebar or main display from direct links or <a href="https://www.base64-image.de/">base64 conversion</a>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href=""></a><span class="fu"># [Image Embedding](https://nextstrain.org/custom/h3n2/ha)</span></span>
+<span id="cb10-2"><a href=""></a></span>
+<span id="cb10-3"><a href=""></a>Images can be embedded from the web in the side panel.</span>
+<span id="cb10-4"><a href=""></a></span>
+<span id="cb10-5"><a href=""></a><span class="al">![](https://www.esrf.fr/files/live/sites/www/files/news/general-old/general-2009/Influenza-Virus.jpg)</span></span>
+<span id="cb10-6"><a href=""></a></span>
+<span id="cb10-7"><a href=""></a><span class="in">```auspiceMainDisplayMarkdown</span></span>
+<span id="cb10-8"><a href=""></a><span class="in">### Or in the main body display via the `auspiceMainDisplayMarkdown` section.</span></span>
+<span id="cb10-9"><a href=""></a></span>
+<span id="cb10-10"><a href=""></a><span class="in">For main body markdown display.</span></span>
+<span id="cb10-11"><a href=""></a></span>
+<span id="cb10-12"><a href=""></a><span class="in">![Flu](https://www.embl.org/news/wp-content/uploads/2020/04/INFLUENZA_EDIT.jpg)</span></span>
+<span id="cb10-13"><a href=""></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="components-of-a-narrative-images-results" class="slide level2">
+<h2>Components of a Narrative: Images (Results)</h2>
+
+<img data-src="images/presentation/11-image-embed.png" class="r-stretch"></section>
+<section id="narratives-continued" class="slide level2">
+<h2>Narratives Continued</h2>
+<p>Normal features of markdown such as:</p>
+<ul>
+<li>Tables</li>
+<li>Lists</li>
+<li>Text formatting</li>
+<li>HTML embedding</li>
+</ul>
+<p>Can all be used in both the narrative side panel and main display.<br>
+</p>
+<p>Again, the main display requires the <code>auspiceMainDisplayMarkdown</code> block for use.</p>
+</section>
+<section id="narrative-exercise" class="slide level2">
+<h2>Narrative Exercise</h2>
+<p>Before moving on to the exercise open a new terminal in the<br>
+<code>seasonal-flu-demo</code> folder and enter into a new nextstrain shell session:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href=""></a><span class="ex">nextstrain</span> shell .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then, run another build using the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href=""></a><span class="ex">nextstrain</span> build . <span class="at">--configfile</span> profiles/gisaid/custom_gisaid_global.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Repeat this process for a third build.</p>
+<p>Open a new terminal, enter a nextstrain shell, and execute the following:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href=""></a><span class="ex">nextstrain</span> build . <span class="at">--configfile</span> profiles/gisaid/custom_gisaid_norefs.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="narrative-exercise-1" class="slide level2 smaller">
+<h2>Narrative Exercise</h2>
+<p>Develop a narrative walking through your current build focusing on viruses circulating in Oceania/Australia (<code>custom_h3n2_ha</code>).</p>
+<ul>
+<li class="fragment">What were the most prominent subclades for samples?</li>
+<li class="fragment">What subclade is exhibiting the highest local branching index (LBI)?</li>
+<li class="fragment">From the identified subclade with the highest LBI, what is the estimated emergence date and range?</li>
+<li class="fragment">What regions is this subclade present in?</li>
+<li class="fragment">What is the rate calculation for the tree overall vs.&nbsp;the rate for the subclade?</li>
+<li class="fragment">Are there any reagent viruses in this subclade? Highlight them.</li>
+<li class="fragment">Add another narrative slide of your choice, highlighting something you’ve found.</li>
+<li class="fragment">Close out your narrative with a summary slide.</li>
+</ul>
+</section></section>
+<section id="section-6-build-comparisons" class="title-slide slide level1 center">
+<h1>Section 6: Build Comparisons</h1>
+<p>We’ll take some time to compare the three different builds we’ve created.</p>
+
+</section>
+
+
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/presentation/CDC-logo.png" class="slide-logo"></p>
