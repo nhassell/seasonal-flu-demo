@@ -16,6 +16,41 @@ execute:
   echo: true
 ---
 
+<style>
+/* collapsibleTree / d3 tooltip */
+div.tooltip,
+.d3-tip,
+.tooltip {
+  color: #111 !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  font-size: 16px !important;
+  text-shadow: none !important;
+  
+  /* key: do NOT force these */
+  opacity: auto;
+  visibility: auto;
+}
+
+/* in case links or spans inside tooltip inherit slide theme colors */
+div.tooltip *,
+.d3-tip *,
+.tooltip * {
+  color: #111 !important;
+  fill: #111 !important;
+}
+
+/* More specific: only node labels (safer) */
+.reveal .html-widget .node text {
+  fill: #ffffff !important;
+}
+
+/* Edit Tooltip Position */
+.reveal .html-widget .tooltip,
+.reveal .html-widget .d3-tip {
+  transform: translate(-10px, -10px);  /* adjust as needed */
+}
+</style>
+
 # Section 1: Overview
 
 ## Getting Started
@@ -231,6 +266,18 @@ The seasonal flu research community recently implemented a [nomenclature and cla
 
 ## Clades in Seasonal Influenza (cont.)
 
+![](images/presentation/type-subtype-clades-subclades.png)
+
+::: notes
+As a refresh, for levels of classification for flu. We are first assessing the
+overall type, for seasonal flu that is type A and B. We further split seasonal flu
+types into subtypes and lineages, which are related to the HA+NA combinations
+of the virus. We can then further separate the HA into clades (which are larger)
+genetic groupings, and then finally into subclades.
+:::
+
+## Clades in Seasonal Influenza (cont.)
+
 Defining a subclade in Nextstrain ([`augur clades` command](https://docs.nextstrain.org/projects/augur/en/stable/usage/cli/clades.html)):
 
 ::::: columns
@@ -345,11 +392,95 @@ part of the hierarchical name.
 expansion or special designation.
 
 ::: notes
-The system
 Shortening (aliasing) of names generally occurs after three hierarchical levels 
 (i.e. D for C.1.1.1), but a new alias may be given earlier in the case of a rapid 
 expansion or special designation.
 :::
+
+## Example of Implementation Using H3N2 HA {.smaller}
+
+```{r}
+#| code-fold: true
+library(networkD3)
+library(data.tree)
+library(htmlwidgets)
+library(collapsibleTree)
+library(yaml)
+library(viridis)
+
+# Create tree via a nested yaml string
+yaml <- "
+name: A (3C)
+A.2 (3C.2):
+  B (*A.2.1):
+    B.1:
+      B.1.1:
+      B.1.2:
+        B.1.2.1:
+          D (*B.1.2.1.2):
+        E (*B.1.2.2):
+          E.1:
+            F (*E.1.1):
+              F.1:
+                F.1.1:
+            G (*E.1.2):
+              G.1:
+                G.1.1:
+                  G.1.1.1:
+                  G.1.1.2:
+                G.1.2:
+                G.1.3:
+                  G.1.3.1:
+                    J (*G.1.3.1.1):
+                      J.1:
+                        J.1.1:
+                      J.2:
+                        J.2.1:
+                        J.2.2:
+                        J.2.3:
+                        J.2.4:
+                          K (*J.2.4.1):
+                        J.2.5:
+                      J.3:
+                      J.4:
+                  G.1.3.2:
+              G.2:
+                G.2.1:
+                G.2.2:
+              G.3:
+              G.4:
+          E.2:
+  B.2:
+  B.3:
+  B.4:
+A.3 (3C.3):
+  C (*A.3.1):
+    C.1
+  A.3.2:
+"
+
+# Load the yaml tree into a list
+h3List <- yaml.load(yaml)
+
+# Transform into a data.tree object
+h3Node <- as.Node(h3List, interpretNullAsList = TRUE)
+
+# Assign a vector of colors for nodes
+h3Colors <- viridis::turbo(h3Node$totalCount)
+
+# Assign colors to tree nodes
+i <- 1
+h3Node$Do(function(node) {
+  node$color <- h3Colors[i]
+  i <<- i + 1
+})
+
+# Display collapsible tree
+collapsibleTree(h3Node,
+                fill = "color",
+                tooltip = TRUE)
+  
+```
 
 # Section 2: Tree Building Overview
 
@@ -362,10 +493,15 @@ Quick break.
 %%| fig-align: center
 flowchart TD
     A[Sequence selection and filtering]
+    style A text-align:center
     B[Multiple sequence alignment]
+    style B text-align:center
     C[Model selection]
+    style C text-align:center
     D[Tree inference]
+    style D text-align:center
     E[Tree evaluation and visualization]
+    style E text-align:center
 
     A -->  |The data that is <br/> included is **important**| B
     B --> C 
@@ -423,7 +559,7 @@ When starting the process of building a tree:
 
     -   Timing of a newly emerged variant?
 
-        -   *Be especially careful here. This requires intensive analysis and scrutiny. Preferably using bayesian methods.*
+        -   *Be especially careful here. This requires intensive analysis and scrutiny. Understand the limitations of analysis.*
 :::
         
 ::: notes
@@ -434,8 +570,7 @@ you are trying to address. Selection will be drastically different whether your
 question is focused around global surveillance, a targeted regional analysis,
 a country specific question, or the timing of a newly emerged variant. This 
 last question requires especially careful consideration in dataset selection and
-would be most appropriate to complete using Bayesian methods, such as the BEAST
-software suite.
+the limitations of the analysis should be well understood.
 :::
 
 ## Multiple Sequence Alignment (MSA)
@@ -464,7 +599,7 @@ Generally, in Nextstrain builds we are aligning the data to a specific reference
 
 Assuming nucleotide sequence data as input:
 
--   Jukes-Cantor (simplest model)
+-   Jukes-Cantor (simplest model)^[Model references can be found [**here**](https://onlinelibrary.wiley.com/doi/full/10.1111/irv.70230)]
 -   HKY
 -   TN93
 -   GTR (Model implemented in Nextstrain flu pipelines)
@@ -503,6 +638,8 @@ data set to completion.
 -   [RAxML](https://cme.h-its.org/exelixis/web/software/raxml/)
 -   [FastTree](https://morgannprice.github.io/fasttree/)
 -   [IQ-TREE (Nextstrain Default)](https://iqtree.github.io/)
+-   [cmaple (Standalone program and within IQ-TREE using \
+`--pathogen` flag)](https://github.com/iqtree/cmaple)
 
 ::: notes
 Common software implementing tree building methods are MEGA, which provides a 
@@ -511,7 +648,7 @@ such as RAxML, FastTree, and IQ-TREE. With IQ-TREE being the maximum likelihood
 implemented in Nexstrain tree building defaults.
 :::
 
-## Tree Evaluation and Visualization
+## Tree Evaluation and Visualization {.smaller}
 
 -   [Nextstrain (auspice)](https://docs.nextstrain.org/projects/auspice/en/stable/)
 -   [auspice.us (browser based auspice)](https://auspice.us/)
@@ -519,6 +656,7 @@ implemented in Nexstrain tree building defaults.
 -   [FigTree](https://tree.bio.ed.ac.uk/software/figtree/)
 -   [ITOL](https://itol.embl.de/)
 -   [Dendroscope](https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/)
+-   [archaeopteryx](https://www.phylosoft.org/archaeopteryx/)
 -   Programmatic libraries:
     -   [ETE Toolkit](https://etetoolkit.org/)
     -   [ggtree](https://guangchuangyu.github.io/software/ggtree/)
