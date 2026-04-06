@@ -16,6 +16,8 @@ execute:
   echo: true
 ---
 
+# Disclaimer {.smaller}
+
 <style>
 /* collapsibleTree / d3 tooltip */
 div.tooltip,
@@ -25,7 +27,7 @@ div.tooltip,
   background: rgba(255, 255, 255, 0.98) !important;
   font-size: 16px !important;
   text-shadow: none !important;
-  
+
   /* key: do NOT force these */
   opacity: auto;
   visibility: auto;
@@ -50,6 +52,12 @@ div.tooltip *,
   transform: translate(-10px, -10px);  /* adjust as needed */
 }
 </style>
+
+- The findings and conclusions in this presentation are those of the authors and do not necessarily represent the official position of the Centers for Disease Control and Prevention.
+
+- Use of trade names and commercial sources is for identification only and does not imply endorsement by the U.S. Department of Health and Human Services.
+
+- References to non-CDC sites on the Internet do not constitute or imply endorsement of these organizations or their programs by CDC or the U.S. Department of Health and Human Services. CDC is not responsible for the content of pages found at these sites.
 
 # Section 1: Overview
 
@@ -542,7 +550,7 @@ sequences of poor quality or not tailoring your data to a particular
 research question will give you poor results. Garbage in. Garbage out.
 :::
 
-## Sequence Selection {.r-fit-text}
+## Sequence Selection {.smaller}
 
 When starting the process of building a tree:
 
