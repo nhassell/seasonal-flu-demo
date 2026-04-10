@@ -307,7 +307,7 @@ All good!  Set up of conda complete.</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p><strong>Phylogenetics</strong> is the study of evolutionary relationships among organisms. Typically, this is shown graphically using a phylogenetic tree. In our case, we’re specifically going to be analyzing the evolution of individual influenza virus subtype gene segments (primarily the HA gene segment).</p>
+<p><strong>Phylogenetics</strong> is the study of evolutionary relationships among organisms. Typically, this is shown graphically using a phylogenetic tree. In our case, we’re specifically going to be analyzing the evolution of individual influenza virus subtype gene segments (primarily the HA gene segment of subtype H3N2).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -350,7 +350,7 @@ All good!  Set up of conda complete.</code></pre>
 
 </div>
 <img data-src="phylogenetics_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>This may be content you all are already aware of but we’ll go over the very basics of a phylogenetic tree. First, the tips in the tree are the terminal nodes and represent the input samples. They are the current descendant taxa being studied.</p>
+<p>This may be content you all are already familiar with but I’ll go over the very basics of a phylogenetic tree to make sure we’re all clear on the concepts. First, the tips in the tree are the terminal nodes and represent the input samples. They are the current descendant taxa being studied.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -379,7 +379,7 @@ All good!  Set up of conda complete.</code></pre>
 
 </div>
 <img data-src="phylogenetics_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>The next component, internal nodes, represent a common ancestor from which two or more descendant lineages diverged.</p>
+<p>The next component, internal nodes, represent a common ancestor from which two or more descendant lineages diverged. In this example the node farthest out in this tree would be the common ancestor of samples C and D.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -509,7 +509,7 @@ All good!  Set up of conda complete.</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>The most common type of tree you’ll typically see are divergence scaled trees, where the branch distance represents direct genetic distance of samples to each other or the tree’s root. This is shown by the tree on the left. Another type of tree is a time scaled tree, where the branches are instead representative of estimated time divergence. This is shown by the tree on the right.</p>
+<p>Now that we’ve reiterated the key concepts of a phylogeny, I’ll go over the types of phylogenetic trees that you’ll commonly see displayed.The most common type of tree you’ll typically see are divergence scaled trees, where the branch distance represents direct genetic distance of samples to each other or the tree’s root. This is shown by the tree on the left. Another type of tree is a time scaled tree, where the branches are instead representative of estimated time divergence. However, the ancestral relationship and branching is still retained in this display. This is shown by the tree on the right.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -526,7 +526,9 @@ All good!  Set up of conda complete.</code></pre>
 <h2>Molecular Clock Concept</h2>
 
 <img data-src="images/presentation/05-molecular-clock.png" class="r-stretch"><aside class="notes">
-<p>A core concept behind computing time scaled trees is the molecular clock. Generally this concept is the idea that genetic mutations accumulate at a roughly constant rate over time, and because of this the genetic difference between taxa can be used to estimate how long ago they shared a common ancestor, given the date information associated with each taxa.</p>
+<p>A core concept behind computing time scaled trees is the molecular clock. Generally, this concept is the idea that genetic mutations accumulate at a roughly constant rate over time, and because of this the genetic difference between taxa can be used to estimate how long ago they shared a common ancestor, given the date information associated with each taxa.</p>
+<p>Clock models can be either “strict” or “relaxed”. A “strict” clocks assume a constant rate across all lineages, whereas “relaxed” clocks allow rate variation across branches.</p>
+<p>The trees we will be creating will be using a strict clock with rates estimated from 12-year phylogenies.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -544,7 +546,7 @@ All good!  Set up of conda complete.</code></pre>
 <p><strong>Clades</strong> are the fundamental grouping of phylogenetic trees. They are defined as a monophyletic group of taxa in a tree that includes a single common ancestor and all its descendants.</p>
 <p><a href="images/presentation/06-clade-definition.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="images/presentation/06-clade-definition.png" title="Accessed from https://evolution.berkeley.edu/teach-resources/clades-1-of-2-definition/" width="500"></a></p>
 <aside class="notes">
-<p>Clades can be just single branches from a tree, or contain numerous branches. But they are often used for tracing ancestry and epidemic spread in the context of virology.</p>
+<p>Within phylogenetic trees, clades are the fundamental grouping. Clades can be just single branches from a tree, or contain numerous branches. But they are often used for tracing ancestry and epidemic spread in the context of virology.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -557,16 +559,29 @@ All good!  Set up of conda complete.</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="clades-in-seasonal-influenza" class="slide level2 smaller">
+<section id="clades-in-seasonal-influenza" class="slide level2">
 <h2>Clades in Seasonal Influenza</h2>
-<p>The seasonal flu research community recently implemented a <a href="https://onlinelibrary.wiley.com/doi/10.1111/irv.70230">nomenclature and clade proposal system</a> for tracking important emerging clades. These correspond to the “subclade” designations from <a href="https://clades.nextstrain.org/">Nextclade</a> outputs.</p>
-
-<img data-src="images/presentation/07-subclades.png" width="1167" class="r-stretch"></section>
-<section id="clades-in-seasonal-influenza-cont." class="slide level2">
-<h2>Clades in Seasonal Influenza (cont.)</h2>
 
 <img data-src="images/presentation/type-subtype-clades-subclades.png" class="r-stretch"><aside class="notes">
-<p>As a refresh, for levels of classification for flu. We are first assessing the overall type, for seasonal flu that is type A and B. We further split seasonal flu types into subtypes and lineages, which are related to the HA+NA combinations of the virus. We can then further separate the HA into clades (which are larger) genetic groupings, and then finally into subclades.</p>
+<p>As a refresh, for levels of classification for flu. We are first assessing the overall type, for seasonal flu that is type A and B. We further split seasonal flu types into subtypes and lineages, which are related to the HA+NA combinations of the virus. We can then further separate the HA into clades (or genetic groups) which are broader genetic groupings, and then finally into “subclades”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="clades-in-seasonal-influenza-cont." class="slide level2 smaller">
+<h2>Clades in Seasonal Influenza (cont.)</h2>
+<p>The seasonal flu research community recently implemented a <a href="https://onlinelibrary.wiley.com/doi/10.1111/irv.70230">nomenclature and clade proposal system</a> for tracking important emerging clades. These correspond to the “subclade” designations from <a href="https://clades.nextstrain.org/">Nextclade</a> outputs.</p>
+
+<img data-src="images/presentation/07-subclades.png" width="1167" class="r-stretch"><aside class="notes">
+<p>For subclades, the seasonal flu research community recently implemented a nomenclature and clade proposal system for tracking important emerging clades. These correspond to the “subclade” designations from Nextclade outputs.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -665,7 +680,7 @@ All good!  Set up of conda complete.</code></pre>
 </table>
 </div></div>
 <aside class="notes">
-<p>Subclades are defined in Nextstrain builds using a four column tab separated file. With the columns “clade”, “gene”, “site”, and “alt”. The “clade” column is the desired definition of the clade to be annotated, the “gene” column is the site level to be evaluated (specific protein, nucleotide, or clade), the “site” column is the numeric site or parent clade required, and the “alt” column is the nucleotide or amino acid present at the given site. In essence, we are listing the required ancestral changes for the originating subclade node.</p>
+<p>Subclades are defined in Nextstrain builds using a four column tab separated file. With the columns “clade”, “gene”, “site”, and “alt”. The “clade” column is the desired definition of the clade to be annotated, the “gene” column is the site level to be evaluated (using a specific protein, nucleotide, or clade), the “site” column is the numeric site or parent clade required, and the “alt” column is the nucleotide or amino acid present at the given site. In essence, we are listing the required ancestry for the originating subclade node.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -763,7 +778,7 @@ All good!  Set up of conda complete.</code></pre>
 <p>Lineage proposals are through <a href="https://github.com/cov-lineages/pango-designation/tree/master?tab=readme-ov-file">public submission</a></p>
 <p>This has led to the designation of 5.7K+ lineages. 🤯</p>
 <aside class="notes">
-<p>Although seasonal influenza subclades might look topically similar to pango lineages for SARS-CoV-2 they are not equivalent. The only requirement for the designation of a pango lineage is a group of viruses that ahve a shared ancestry. This can be from a single synonymous mutation that has no affect of the viral protein structure. This unrestricted system of lineage designation has led to the designation of more than 5,700 lineages. Along with a complete alphabet soup of lineage names.</p>
+<p>Although seasonal influenza subclades might look topically similar to pango lineages for SARS-CoV-2 they are not equivalent. The only requirement for the designation of a pango lineage is a group of viruses that have a shared ancestry. This can be from a single synonymous mutation that has no affect on the viral protein structure. This unrestricted system of lineages has led to the designation of more than 5,700 lineages. Along with a complete alphabet soup of lineage names.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -789,8 +804,8 @@ All good!  Set up of conda complete.</code></pre>
 </p>
 <p>A threshold score of 1.0 is set.</p>
 <aside class="notes">
-<p>There are three criteria for subclade proposal. Size, with larger groups having higher priority of desigation. Divergence, with more mutations accumatlated, the higher the priority. And specific mutations of signifigance. These muations get weighted higher for designation.</p>
-<p>Each of these components feeds into the calculation of normalized branch scores accross the tree, with a threshold value of one set. This chosen threshold mean that any one score criteria alone will not trigger a new lineage, but together, the threshold can be passed with a single HA1 mutation.</p>
+<p>There are three criteria for subclade proposal. First being size, with larger groups having a higher priority of designation. Second, divergence, with more mutations accumulated, the higher the priority. And lastly, specific mutations of significance. These mutations get weighted higher for designation.</p>
+<p>Each of these components feeds into the calculation of normalized branch scores across the tree, with a threshold value of one set. This chosen threshold means that any one score criteria alone will not trigger a new lineage, but together, the threshold can be passed with a single HA1 mutation.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -812,7 +827,8 @@ All good!  Set up of conda complete.</code></pre>
 <li>However, a new alias may be given earlier in the case of a rapid expansion or special designation.</li>
 </ul>
 <aside class="notes">
-<p>Shortening (aliasing) of names generally occurs after three hierarchical levels (i.e.&nbsp;D for C.1.1.1), but a new alias may be given earlier in the case of a rapid expansion or special designation.</p>
+<p>The system of subclade naming uses a variation of the Pango nomenclature system, where capitol letters are used as aliases and numbers separated by periods for the retained part of the hierarchical name.</p>
+<p>Shortening (or aliasing) of names generally occurs after three hierarchical levels, but a new alias may be given earlier in the case of a rapid expansion or special designation.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -910,8 +926,8 @@ All good!  Set up of conda complete.</code></pre>
 <span id="cb7-78"><a href=""></a>                <span class="at">tooltip =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div class="collapsibleTree html-widget html-fill-item" id="htmlwidget-e3222b1de750f073c6e4" style="width:960px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-e3222b1de750f073c6e4">{"x":{"data":{"name":"A (3C)","fill":"#30123BFF","WeightOfNode":24,"children":[{"name":"A.2 (3C.2)","fill":"#372365FF","WeightOfNode":23,"children":[{"name":"B (*A.2.1)","fill":"#3D3489FF","WeightOfNode":20,"children":[{"name":"B.1","fill":"#4144A9FF","WeightOfNode":20,"children":[{"name":"B.1.1","fill":"#4454C4FF","WeightOfNode":1},{"name":"B.1.2","fill":"#4664DAFF","WeightOfNode":19,"children":[{"name":"B.1.2.1","fill":"#4772EAFF","WeightOfNode":1,"children":[{"name":"D (*B.1.2.1.2)","fill":"#4681F7FF","WeightOfNode":1}]},{"name":"E (*B.1.2.2)","fill":"#4490FEFF","WeightOfNode":18,"children":[{"name":"E.1","fill":"#3D9EFEFF","WeightOfNode":17,"children":[{"name":"F (*E.1.1)","fill":"#33ADF7FF","WeightOfNode":1,"children":[{"name":"F.1","fill":"#28BBECFF","WeightOfNode":1,"children":[{"name":"F.1.1","fill":"#1FC8DEFF","WeightOfNode":1}]}]},{"name":"G (*E.1.2)","fill":"#1AD4CFFF","WeightOfNode":16,"children":[{"name":"G.1","fill":"#18DEC0FF","WeightOfNode":12,"children":[{"name":"G.1.1","fill":"#1DE7B2FF","WeightOfNode":2,"children":[{"name":"G.1.1.1","fill":"#29EFA2FF","WeightOfNode":1},{"name":"G.1.1.2","fill":"#3AF590FF","WeightOfNode":1}]},{"name":"G.1.2","fill":"#4FF97CFF","WeightOfNode":1},{"name":"G.1.3","fill":"#65FD69FF","WeightOfNode":9,"children":[{"name":"G.1.3.1","fill":"#7DFF56FF","WeightOfNode":8,"children":[{"name":"J (*G.1.3.1.1)","fill":"#91FF48FF","WeightOfNode":8,"children":[{"name":"J.1","fill":"#A2FC3CFF","WeightOfNode":1,"children":[{"name":"J.1.1","fill":"#B2F936FF","WeightOfNode":1}]},{"name":"J.2","fill":"#C1F334FF","WeightOfNode":5,"children":[{"name":"J.2.1","fill":"#D0EA34FF","WeightOfNode":1},{"name":"J.2.2","fill":"#DCE137FF","WeightOfNode":1},{"name":"J.2.3","fill":"#E8D639FF","WeightOfNode":1},{"name":"J.2.4","fill":"#F1CA3AFF","WeightOfNode":1,"children":[{"name":"K (*J.2.4.1)","fill":"#F8BE39FF","WeightOfNode":1}]},{"name":"J.2.5","fill":"#FCB136FF","WeightOfNode":1}]},{"name":"J.3","fill":"#FEA230FF","WeightOfNode":1},{"name":"J.4","fill":"#FE922AFF","WeightOfNode":1}]}]},{"name":"G.1.3.2","fill":"#FB8022FF","WeightOfNode":1}]}]},{"name":"G.2","fill":"#F76F1AFF","WeightOfNode":2,"children":[{"name":"G.2.1","fill":"#F15D13FF","WeightOfNode":1},{"name":"G.2.2","fill":"#EA4F0DFF","WeightOfNode":1}]},{"name":"G.3","fill":"#E2420AFF","WeightOfNode":1},{"name":"G.4","fill":"#D83706FF","WeightOfNode":1}]}]},{"name":"E.2","fill":"#CC2B04FF","WeightOfNode":1}]}]}]}]},{"name":"B.2","fill":"#BE2102FF","WeightOfNode":1},{"name":"B.3","fill":"#B01901FF","WeightOfNode":1},{"name":"B.4","fill":"#A01101FF","WeightOfNode":1}]},{"name":"A.3 (3C.3)","fill":"#8D0A01FF","WeightOfNode":1,"children":[{"name":"A.3.2","fill":"#7A0403FF","WeightOfNode":1}]}]},"options":{"hierarchy":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"input":null,"attribute":"leafCount","linkLength":null,"fontSize":10,"tooltip":true,"collapsed":true,"zoomable":true,"margin":{"top":20,"bottom":20,"left":55,"right":85}}},"evals":[],"jsHooks":[]}</script>
+<div class="collapsibleTree html-widget html-fill-item" id="htmlwidget-7fd64f5adfd1c37a4444" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-7fd64f5adfd1c37a4444">{"x":{"data":{"name":"A (3C)","fill":"#30123BFF","WeightOfNode":24,"children":[{"name":"A.2 (3C.2)","fill":"#372365FF","WeightOfNode":23,"children":[{"name":"B (*A.2.1)","fill":"#3D3489FF","WeightOfNode":20,"children":[{"name":"B.1","fill":"#4144A9FF","WeightOfNode":20,"children":[{"name":"B.1.1","fill":"#4454C4FF","WeightOfNode":1},{"name":"B.1.2","fill":"#4664DAFF","WeightOfNode":19,"children":[{"name":"B.1.2.1","fill":"#4772EAFF","WeightOfNode":1,"children":[{"name":"D (*B.1.2.1.2)","fill":"#4681F7FF","WeightOfNode":1}]},{"name":"E (*B.1.2.2)","fill":"#4490FEFF","WeightOfNode":18,"children":[{"name":"E.1","fill":"#3D9EFEFF","WeightOfNode":17,"children":[{"name":"F (*E.1.1)","fill":"#33ADF7FF","WeightOfNode":1,"children":[{"name":"F.1","fill":"#28BBECFF","WeightOfNode":1,"children":[{"name":"F.1.1","fill":"#1FC8DEFF","WeightOfNode":1}]}]},{"name":"G (*E.1.2)","fill":"#1AD4CFFF","WeightOfNode":16,"children":[{"name":"G.1","fill":"#18DEC0FF","WeightOfNode":12,"children":[{"name":"G.1.1","fill":"#1DE7B2FF","WeightOfNode":2,"children":[{"name":"G.1.1.1","fill":"#29EFA2FF","WeightOfNode":1},{"name":"G.1.1.2","fill":"#3AF590FF","WeightOfNode":1}]},{"name":"G.1.2","fill":"#4FF97CFF","WeightOfNode":1},{"name":"G.1.3","fill":"#65FD69FF","WeightOfNode":9,"children":[{"name":"G.1.3.1","fill":"#7DFF56FF","WeightOfNode":8,"children":[{"name":"J (*G.1.3.1.1)","fill":"#91FF48FF","WeightOfNode":8,"children":[{"name":"J.1","fill":"#A2FC3CFF","WeightOfNode":1,"children":[{"name":"J.1.1","fill":"#B2F936FF","WeightOfNode":1}]},{"name":"J.2","fill":"#C1F334FF","WeightOfNode":5,"children":[{"name":"J.2.1","fill":"#D0EA34FF","WeightOfNode":1},{"name":"J.2.2","fill":"#DCE137FF","WeightOfNode":1},{"name":"J.2.3","fill":"#E8D639FF","WeightOfNode":1},{"name":"J.2.4","fill":"#F1CA3AFF","WeightOfNode":1,"children":[{"name":"K (*J.2.4.1)","fill":"#F8BE39FF","WeightOfNode":1}]},{"name":"J.2.5","fill":"#FCB136FF","WeightOfNode":1}]},{"name":"J.3","fill":"#FEA230FF","WeightOfNode":1},{"name":"J.4","fill":"#FE922AFF","WeightOfNode":1}]}]},{"name":"G.1.3.2","fill":"#FB8022FF","WeightOfNode":1}]}]},{"name":"G.2","fill":"#F76F1AFF","WeightOfNode":2,"children":[{"name":"G.2.1","fill":"#F15D13FF","WeightOfNode":1},{"name":"G.2.2","fill":"#EA4F0DFF","WeightOfNode":1}]},{"name":"G.3","fill":"#E2420AFF","WeightOfNode":1},{"name":"G.4","fill":"#D83706FF","WeightOfNode":1}]}]},{"name":"E.2","fill":"#CC2B04FF","WeightOfNode":1}]}]}]}]},{"name":"B.2","fill":"#BE2102FF","WeightOfNode":1},{"name":"B.3","fill":"#B01901FF","WeightOfNode":1},{"name":"B.4","fill":"#A01101FF","WeightOfNode":1}]},{"name":"A.3 (3C.3)","fill":"#8D0A01FF","WeightOfNode":1,"children":[{"name":"A.3.2","fill":"#7A0403FF","WeightOfNode":1}]}]},"options":{"hierarchy":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"input":null,"attribute":"leafCount","linkLength":null,"fontSize":10,"tooltip":true,"collapsed":true,"zoomable":true,"margin":{"top":20,"bottom":20,"left":55,"right":85}}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section></section>
@@ -1063,7 +1079,7 @@ All good!  Set up of conda complete.</code></pre>
 <li><a href="https://github.com/nextstrain/nextclade?tab=readme-ov-file"><strong>nextclade</strong> aligner (previously nextalign)</a></li>
 </ul>
 <aside class="notes">
-<p>Some common examples of MSA alignment software are CLUSTAL, MAFFT, MUSCLE, and the nextclade aligner. Nextclade is the default aligner used by nextstrain in their core pathogen workflows. MAFFT is also available as an aligner installed as part of the nextstrain environment. Generally, in Nextstrain builds we are aligning the data to a specific reference sequence rather than doing a true global sequence alignment. This keeps numbering consistent in relation to the reference, allowing better contextualization of analysis.</p>
+<p>Some common examples of MSA alignment software are CLUSTAL, MAFFT, MUSCLE, and the Nextclade aligner. Nextclade is the default aligner used by Nextstrain in their core pathogen workflows. MAFFT is also available as an aligner installed as part of the Nextstrain environment. Generally, in Nextstrain builds we are aligning the data to a specific reference sequence rather than doing a true global sequence alignment. This keeps numbering consistent in relation to the reference, allowing better contextualization of analysis.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1137,7 +1153,7 @@ All good!  Set up of conda complete.</code></pre>
 <code>--pathogen</code> flag)</a></li>
 </ul>
 <aside class="notes">
-<p>Common software implementing tree building methods are MEGA, which provides a robust toolkit in a graphical user interface and other command line tools such as RAxML, FastTree, and IQ-TREE. With IQ-TREE being the maximum likelihood implemented in Nexstrain tree building defaults.</p>
+<p>Common software implementing tree building methods are MEGA, which provides a robust toolkit in a graphical user interface and other command line tools such as RAxML, FastTree, and IQ-TREE, and cmaple. With IQ-TREE being the maximum likelihood program implemented in Nexstrain tree building defaults.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1189,7 +1205,7 @@ All good!  Set up of conda complete.</code></pre>
 <li>Auspice (browser based vizualization)</li>
 </ul>
 <aside class="notes">
-<p>Now that we’ve gone through the basics of tree building, we’ll go over Nextstrain. Nextstrain is an open source toolkit for analyzing and visualizing pathogen genomic data. The two main components of the software are augur and auspice. Where augur is a packaged toolkit of bioinformatics tools and auspice is the web browser based visualization software from the output of augur.</p>
+<p>Now that we’ve gone through the basics of tree building, we’ll go over Nextstrain. Nextstrain is an open source toolkit for analyzing and visualizing pathogen genomic data. The two main components of the software are augur and auspice. Where augur is a packaged toolkit of bioinformatics tools and auspice is the web browser based visualization software designed for the output of augur.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1250,7 +1266,7 @@ All good!  Set up of conda complete.</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>The essential components of a Nextstrain workflow are shown in this diagram. Generally, as input we are providing a sequence file in fasta format and a columnar data file associated with our sequence file. These files are then taken through the augur pipeline. First, the “filter” step is used to sample data by defined criteria. Then the filtered sequence data is aligned to a provided reference in the “align” step. A tree is then built from this alignment using the “tree” command. The tree is then processed through the “refine” step, which refines the tree using sequence metadata and produces a time scaled phylogeny. All of the essential files needed for a Nextstrain build are then processed in the export step, where the files are combined into one or more JSON files. These JSON files form a “build” data set, which can then be directly viewed in auspice.</p>
+<p>The essential components of a Nextstrain workflow are shown in this diagram. Generally, as input we are providing a sequence file in fasta format and a columnar data file associated with our sequence file. These files are then taken through the augur pipeline. First, the “filter” step is used to sample data by defined criteria. Then the filtered sequence data is aligned to a provided reference in the “align” step. A tree is then built from this alignment using the “tree” command. The tree is then processed through the “refine” step, which refines the tree using sequence metadata, removes outliers, and produces a time scaled phylogeny. All of the essential files needed for a Nextstrain build are then processed in the export step, where the files are combined into one or more JSON files. These JSON files form a “build” data set, which can then be directly viewed in auspice.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1318,6 +1334,7 @@ All good!  Set up of conda complete.</code></pre>
 <p>For local builds, you will have the prefix <code>https://nextstrain.org</code> followed by your build file name with underscores replaced by the <code>/</code> character (ie. <code>custom_h3n2_ha.json</code> dataset becomes <code>https://nextstrain.org/custom/h3n2/ha</code>)</p>
 <aside class="notes">
 <p>Open the example narrative file in VS Code. At the top of the file is the narrative header. This header contains the title of your narrative, the authors, the data set link, and the abstract that you would like displayed for your narrative.</p>
+<p>For local builds, you will have the prefix <code>https://nextstrain.org</code> followed by your build file name with underscores replaced by the <code>/</code> character (ie. <code>custom_h3n2_ha.json</code> dataset becomes <code>https://nextstrain.org/custom/h3n2/ha</code>)</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1332,9 +1349,9 @@ All good!  Set up of conda complete.</code></pre>
 </section>
 <section id="components-of-a-narrative-header-result" class="slide level2">
 <h2>Components of a Narrative: Header (Result)</h2>
-
-<img data-src="images/presentation/09-narrative-intro.png" class="r-stretch"></section>
-<section id="components-of-a-narrative-basic-slides" class="slide level2">
+<p><img data-src="images/presentation/09-narrative-intro.png"> ::: notes This is the result of the example defined narrative header. :::</p>
+</section>
+<section id="components-of-a-narrative-basic-slides" class="slide level2 smaller">
 <h2>Components of a Narrative: Basic Slides</h2>
 <p>Basic slides are set up by providing copied links as first level headers:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href=""></a><span class="fu"># [Custom Dataset Slide](https://nextstrain.org/custom/h3n2/ha?d=tree,map,frequencies&amp;f_sample_type=sample&amp;p=grid)</span></span>
@@ -1342,6 +1359,20 @@ All good!  Set up of conda complete.</code></pre>
 <span id="cb9-3"><a href=""></a>Example of a basic slide view.</span>
 <span id="cb9-4"><a href=""></a></span>
 <span id="cb9-5"><a href=""></a>The slide is filtered to a "Sample Type" of "sample".</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img data-src="images/presentation/narrative-link-copy.png"> Copy the end of the link and add the prefix of <code>https://nextstrain.org/</code></p>
+<aside class="notes">
+<p>Slides are set up by providing copied links as first level headers. You will just be copying the link of your build view and adding the prefix of <code>https://nextstrain.org/</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="components-of-a-narrative-basic-slides-result" class="slide level2">
 <h2>Components of a Narrative: Basic Slides (Result)</h2>
@@ -1354,14 +1385,29 @@ All good!  Set up of conda complete.</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href=""></a><span class="fu"># [Custom Dataset Animations](https://nextstrain.org/custom/h3n2/ha?animate=2024-06-04,2025-12-20,0,0,30000&amp;d=map&amp;f_sample_type=sample&amp;p=full)</span></span>
 <span id="cb10-2"><a href=""></a></span>
 <span id="cb10-3"><a href=""></a>Animations can be captured.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>Timeline animations can be used in narratives by copying the link associated with the animation.</p>
+<p>The link will briefly show after clicking the “Play ▶️” button underneath the “Date Range” toolbar.</p>
+<p>This can be helpful to provide an engaging illustration of a potential epidemic in a particular time period.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="components-of-a-narrative-animations-result" class="slide level2">
 <h2>Components of a Narrative: Animations (Result)</h2>
 
 <img data-src="images/presentation/2026-03-03%2015.30.55.gif" class="r-stretch"></section>
-<section id="components-of-a-narrative-images" class="slide level2">
+<section id="components-of-a-narrative-images" class="slide level2 smaller">
 <h2>Components of a Narrative: Images</h2>
-<p>Images can be imbedded into the narrative sidebar or main display from direct links or <a href="https://www.base64-image.de/">base64 conversion</a>.</p>
+<p>Images can be embedded into the narrative sidebar or main display from direct links or <a href="https://www.base64-image.de/">base64 conversion</a>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource markdown code-overflow-wrap number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href=""></a><span class="fu"># [Image Embedding](https://nextstrain.org/custom/h3n2/ha)</span></span>
 <span id="cb11-2"><a href=""></a></span>
 <span id="cb11-3"><a href=""></a>Images can be embedded from the web in the side panel.</span>
@@ -1375,6 +1421,21 @@ All good!  Set up of conda complete.</code></pre>
 <span id="cb11-11"><a href=""></a></span>
 <span id="cb11-12"><a href=""></a><span class="in">![Flu](https://www.embl.org/news/wp-content/uploads/2020/04/INFLUENZA_EDIT.jpg)</span></span>
 <span id="cb11-13"><a href=""></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note the usage of the <code>auspiceMainDisplayMarkdown</code> block to have markdown for the main narrative display.</p>
+<aside class="notes">
+<p>Images can be embedded into the narrative sidebar or main display from direct links or base64 conversion. You can click on the link in this slide to be directed to a web based base64 converter. You can directly copy the outputs of the converter into your markdown link.</p>
+<p>Note the usage of the <code>auspiceMainDisplayMarkdown</code> block to have markdown for the main narrative window.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="components-of-a-narrative-images-results" class="slide level2">
 <h2>Components of a Narrative: Images (Results)</h2>
@@ -1420,7 +1481,20 @@ All good!  Set up of conda complete.</code></pre>
 </section></section>
 <section id="section-6-build-comparisons" class="title-slide slide level1 center">
 <h1>Section 6: Build Comparisons</h1>
-<p>We’ll take some time to compare the three different builds we’ve created.</p>
+<p>We’ll take some time to compare the three different builds we’ve created. To address caveats of sampling.</p>
+<aside class="notes">
+<p>Go over three Nextstrain builds. Highlight the differences between focused country build, global context build, and the sample only build without reference sequences.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 </section>
 
