@@ -10,6 +10,8 @@ format:
     transition: fade
     theme: dracula
     logo: images/presentation/CDC-logo.png
+    revealjs-plugins:
+      - pointer-sync
 editor: visual
 execute:
   freeze: auto
@@ -258,9 +260,23 @@ Another type of tree is a time scaled tree, where the branches are instead repre
 However, the ancestral relationship and branching is still retained in this display. This is shown by the tree on the right.
 :::
 
-## Molecular Clock Concept
+## Molecular Clock Concept {.smaller}
 
 ![](images/presentation/05-molecular-clock.png)
+
+::::: columns
+::: {.column width="50%"}
+Strict Clock
+
+- Assumes constant rate accross all lineages
+:::
+
+::: {.column width="50%"}
+Relaxed Clock
+
+- Allows rate variation across branches
+:::
+:::::
 
 ::: notes
 A core concept behind computing time scaled trees is the molecular clock. Generally, this concept is the idea that genetic
@@ -861,6 +877,7 @@ by the `/` character (ie. `custom_h3n2_ha.json` dataset becomes
 ## Components of a Narrative: Header (Result)
 
 ![](images/presentation/09-narrative-intro.png)
+
 ::: notes
 This is the result of the example defined narrative header.
 :::
