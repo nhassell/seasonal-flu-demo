@@ -100,6 +100,11 @@ Install the `nextstrain-cli` using the instructions for your operating system.
 
 For the "Set up a Nextstrain runtime" section, follow the "Conda" instructions for your operating system. We'll go around to help if you are running into issues.
 
+## Getting Started (Cont.)
+
+Before I move on we'll be going through the first part of the 
+practical [downloading data from GISAID to use in our analysis.](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#gisaid-file-custom-demo)
+
 ## Intro to the Intro
 
 **Phylogenetics** is the study of evolutionary relationships among organisms.
