@@ -816,7 +816,7 @@ form a "build" data set, which can then be directly viewed in auspice.
 
 # Section 3: Nextstrain Build Exercise
 
-Click on the following [link](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#demo-build-walkthrough)
+Click on the following [link](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo.md#customizing-basic-build-elements)
 which will direct you to the exercise we will be going through together.
 
 # Section 4: Overview of Nextstrain Features and Navigation
