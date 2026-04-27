@@ -5,6 +5,7 @@ author: "Norman Hassell"
 engine: knitr
 format:
   revealjs:
+    embed-resources: true
     slide-number: true
     code-copy: true
     transition: fade
