@@ -1017,19 +1017,35 @@ nextstrain build . --configfile profiles/gisaid/custom_gisaid_norefs.yaml
 ## Narrative Exercise {.smaller}
 
 ::: {.incremental}
-Develop a narrative walking through your current build
-focusing on viruses circulating in Oceania/Australia (`custom_h3n2_ha`).
+Copy the narrative file located at `profiles/gisaid/custom.md` into your
+`auspice/` folder:
 
-- What were the most prominent subclades for samples?
-- What subclade is exhibiting the highest local branching index (LBI)?
-- From the identified subclade with the highest LBI, what is the estimated 
-emergence date and range?
-- What regions is this subclade present in?
-- What is the rate calculation for the tree overall vs. the rate for the subclade?
-- Are there any reagent viruses in this subclade? Highlight them.
+```{.bash}
+cp profiles/gisaid/custom.md aupsice/custom.md
+```
+
+With your first build focusing on viruses circulating in Oceania/Australia (`custom_h3n2_ha`)
+modify the `aupsice/custom.md` narrative markdown to add slides to addressing the following:
+
+- For subclade K, what is the rate estimate for the tree overall vs. the rate estimate for this subclade?
+- Are there any reagent viruses in this subclade? If so, highlight them.
 - Add another narrative slide of your choice, highlighting something you've found.
 - Close out your narrative with a summary slide.
 :::
+
+## Narrative Exercise Answers
+
+Copy the narrative practical answers file to your `auspice/` folder to view the practical section answers:
+
+```{.bash}
+cp profiles/gisaid/custom_practical.md aupsice/custom_practical.md
+```
+
+View this narraive in the `auspice` viewer launched in your browser\ 
+
+Or uplaod the narrative file + build jsons into [`auspice.us`](https://auspice.us/)\
+
+How do your answers compare to the practical answers?\
 
 # Section 6: Build Comparisons
 

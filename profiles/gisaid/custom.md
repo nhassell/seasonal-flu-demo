@@ -1,19 +1,33 @@
 ---
 title: Custom Local Hosted Narrative
 authors: Norman Hassell
-date: "2026-03-02"
+date: "2026-05-11"
 dataset: "https://nextstrain.org/custom/h3n2/ha"
 abstract: "
 Custom narrative of custom build
 "
 ---
 
-# [Custom Dataset](https://nextstrain.org/custom/h3n2/ha/?d=tree,map,frequencies&f_sample_type=sample&p=grid)
+---
+title: Custom Local Hosted Narrative Answers
+authors: Norman Hassell
+date: "2026-04-15"
+dataset: "https://nextstrain.org/custom/h3n2/ha"
+abstract: "Custom narrative practical of custom build"
+---
 
-Example of a basic slide view.
+# [Current Circulating Subclades](https://nextstrain.org/custom/h3n2/ha?f_sample_type=sample)
 
-The slide is filtered to a "Sample Type" of "sample".
+The most prevalent HA subclades circulating within this time period in Oceania were:
+- K
+- J.2.2
+- J.2.4
+- J.2
 
-# [Focused Dataset View](https://nextstrain.org/custom/h3n2/ha?d=tree,frequencies&label=Subclade:K&p=full)
 
-- Test
+# [Subclade K Expansion](https://nextstrain.org/custom/h3n2/ha?c=lbi&d=tree&p=full)
+
+Out of the 4 most prevalent subclades, subclade K had the highest local branching index     
+ (LBI) values, which is a measure of how rapidly a clade is expanding. This suggests that 
+subclade K may be expanding more rapidly than the other subclades in Oceania during this 
+time period.
