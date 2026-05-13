@@ -68,6 +68,46 @@ Navigate into the cloned directory.
 ``` bash
 cd seasonal-flu-demo
 ```
+### Downloading Sample Data
+
+Create a new directory for the data we will be downloading in the `seasonal-flu-demo` working directory.
+
+``` bash
+mkdir -p data/h3n2/
+```
+
+Navigate to [GISAID](http://gisaid.org).
+Select the "EpiFlu" link in the top navigation bar and then select "Search" from the EpiFlu navigation bar.
+From the search interface, select A/H3N2 human samples collected from `2025-07-01` to `2025-10-31`, as shown in the example below.
+![Search for recent A/H3N2 data](images/01-demo-gisaid-search-epi.png)
+
+Make sure under the "Required Segments" section at the bottom of the page that "HA" is selected.
+Then select the "Search" button.
+Select the checkbox in the top-left corner of the search results (the same row with the column headings),
+to select all matching records as shown below.
+
+![Select all matching records from search results](images/02-demo-gisaid-search-results-epi.png)
+
+Select the "Download" button.
+From the "Download" window that appears, select "Isolates as XLS (virus metadata only)" and then select the second "Download" button.
+
+![Download metadata](images/03-demo-download-metadata-epi.png)
+
+It may take a little while to download the information. Be patient.
+
+Save the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls`) in the `data/h3n2/` folder you created
+earlier as `metadata.xls`.
+
+Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
+In the "DNA" section, select the checkbox for "HA".
+In the "FASTA Header" section, enter only `Virus name`.
+Leave all other sections at the default values.
+
+![Download sequences](images/04-demo-download-sequences-epi.png)
+
+Select the "Download" button.
+Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta`) as `raw_sequences_ha.fasta` in the
+`data/h3n2/` folder.
 
 ### Downloading Reference Data
 
@@ -153,49 +193,6 @@ Leave all other sections at the default values.
 
 Select the "Download" button.
 Copy the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (2)`) as `reagent_ha.fasta` in the `data/h3n2/` folder.
-
-
-### Downloading Sample Data
-
-Create a new directory for the data we will be downloading in the `seasonal-flu-demo` working directory.
-
-``` bash
-mkdir -p data/h3n2/
-```
-
-Navigate to [GISAID](http://gisaid.org).
-Select the "EpiFlu" link in the top navigation bar and then select "Search" from the EpiFlu navigation bar.
-From the search interface, select A/H3N2 human samples collected from `2025-07-01` to `2025-10-31`, as shown in the example below.
-![Search for recent A/H3N2 data](images/01-demo-gisaid-search-epi.png)
-
-Make sure under the "Required Segments" section at the bottom of the page that "HA" is selected.
-Then select the "Search" button.
-Select the checkbox in the top-left corner of the search results (the same row with the column headings),
-to select all matching records as shown below.
-
-![Select all matching records from search results](images/02-demo-gisaid-search-results-epi.png)
-
-Select the "Download" button.
-From the "Download" window that appears, select "Isolates as XLS (virus metadata only)" and then select the second "Download" button.
-
-![Download metadata](images/03-demo-download-metadata-epi.png)
-
-It may take a little while to download the information. Be patient.
-
-Save the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls`) in the `data/h3n2/` folder you created
-earlier as `metadata.xls`.
-
-Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
-In the "DNA" section, select the checkbox for "HA".
-In the "FASTA Header" section, enter only `Virus name`.
-Leave all other sections at the default values.
-
-![Download sequences](images/04-demo-download-sequences-epi.png)
-
-Select the "Download" button.
-Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta`) as `raw_sequences_ha.fasta` in the
-`data/h3n2/` folder.
-
 
 ### Customizing Basic Build Elements
 
