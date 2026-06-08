@@ -733,3 +733,16 @@ inference. Although it is useful for approximating samples relative evolutionary
 :::
 
 # Section 3: <br>Nextclade Practical
+
+## Practical
+
+Go to the following sites in separate tabs:
+
+- [https://clades.nextstrain.org/](https://clades.nextstrain.org/)
+- [https://nextstrain.org/pathogens?filter=seasonal-flu](https://nextstrain.org/pathogens?filter=seasonal-flu)
+
+Download the following dataset:
+
+- [https://github.com/nhassell/seasonal-flu-demo/blob/master/demo_files.zip](https://github.com/nhassell/seasonal-flu-demo/blob/master/demo_files.zip)
+
+We'll walk through the practical together.
