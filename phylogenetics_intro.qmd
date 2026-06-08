@@ -699,13 +699,14 @@ step, where the files are combined into one or more JSON files. These JSON files
 auspice.
 :::
 
-## Intro to Nextclade
+## Intro to Nextclade {.smaller}
 
 [Nextclade](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-web/index.html) is an application
 that Processes FASTA sequences through alignment, mutation calling, clade assignment, phylogenetic placement, and QC.
 With results in tabular and phylogenetic tree format.
 
 ![](images/presentation/nextclade.png)
+
 ::: notes
 Although nextstrain is a a great tool, it is often not needed to create an entire phylogenetic
 tree from scratch to assess sequences. This is where nextclade can come into play. Nextclade is an 
