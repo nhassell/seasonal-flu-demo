@@ -1,134 +1,178 @@
-# nextstrain.org/flu
+# Seasonal Flu GISAID Workflow
 
-[![Build Status](https://github.com/nextstrain/seasonal-flu/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/nextstrain/seasonal-flu/actions/workflows/ci.yaml)
+This repository contains a [Nextstrain](https://nextstrain.org) workflow for building
+annotated phylogenetic trees of seasonal influenza from GISAID data.
 
-This is the [Nextstrain](https://nextstrain.org) build for seasonal influenza viruses,
-available online at [nextstrain.org/flu](https://nextstrain.org/flu).
+Three lineages are supported: **A/H1N1pdm**, **A/H3N2**, and **B/Vic**.
+Each can be run independently for the **HA** or **NA** segment using the
+pre-configured build files in `profiles/gisaid/`.
 
-The build encompasses fetching data, preparing it for analysis, doing quality control,
-performing analyses, and saving the results in a format suitable for visualization (with
-[auspice][]).  This involves running components of Nextstrain such as [fauna][] and
-[augur][].
+## Prerequisites
 
-All influenza virus specific steps and functionality for the Nextstrain pipeline should be
-housed in this repository.
+Install [Nextstrain's software tools](https://docs.nextstrain.org/en/latest/install.html)
+before running any builds.
 
-This build is more complicated than other standard nextstrain build because all four
-currently circulating seasonal influenza lineages (A/H3N2, A/H1N1pdm, B/Vic and B/Yam)
-are analyzed using the same Snakefile with appropriate wildcards. In addition, we run
-analyses of both the HA and NA segments of the influenza virus genome and analyze datasets
-that span different time intervals (eg 2, 3, 6 years). Furthermore, the Nextstrain analysis
-of influenza virus evolution also uses antigenic and serological data from different
-WHO collaborating centers.
+## Available builds
 
-The different builds for the general public and the different WHO collaborating centers
-are configured via separate config files. The Nextstrain build configs
-([upload](profiles/upload.yaml), [nextstrain-public](profiles/nextstrain-public.yaml), [private.nextflu.org](profiles/private.nextflu.org.yaml))
-are used for our semi-automated builds through our [GitHub Action workflows](.github/workflows/).
+| Config file | Lineage | Segment |
+|---|---|---|
+| `profiles/gisaid/custom_gisaid_h1n1pdm_ha.yaml` | A/H1N1pdm | HA |
+| `profiles/gisaid/custom_gisaid_h1n1pdm_na.yaml` | A/H1N1pdm | NA |
+| `profiles/gisaid/custom_gisaid_h3n2_ha.yaml` | A/H3N2 | HA |
+| `profiles/gisaid/custom_gisaid_h3n2_na.yaml` | A/H3N2 | NA |
+| `profiles/gisaid/custom_gisaid_vic_ha.yaml` | B/Vic | HA |
+| `profiles/gisaid/custom_gisaid_vic_na.yaml` | B/Vic | NA |
 
-## Example build
+## Data download from GISAID
 
-You can run an example build using the example data provided in this repository.
-
-First follow the [standard installation instructions](https://docs.nextstrain.org/en/latest/install.html)
-for Nextstrain's suite of software tools.
-
-Then run the example build via:
+Each build requires six files downloaded from [GISAID EpiFlu](https://www.epicov.org/epi3/).
+Files must be placed in `data/{segment}/{lineage}/` — for example, H1N1pdm HA data goes in
+`data/ha/h1n1pdm/`. This directory layout allows HA and NA builds to run without
+overwriting each other's files.
 
 ```
-nextstrain build .  --configfile profiles/example/builds.yaml
+data/
+  ha/
+    h1n1pdm/
+      metadata.xls
+      genetic.xls
+      reagent.xls
+      raw_sequences_ha.fasta
+      genetic_ha.fasta
+      reagent_ha.fasta
+  na/
+    h1n1pdm/
+      metadata.xls
+      ...
 ```
 
-When the build has finished running, view the output Auspice trees via:
+### Downloading sample sequences and metadata
 
+1. Go to **EpiFlu → Search** on GISAID.
+2. Filter by lineage (e.g. A/H1N1pdm), host = Human, and your desired date range.
+3. Under **Required Segments**, select your segment (HA or NA).
+4. Click **Search**, then select all results.
+5. Click **Download → Isolates as XLS (virus metadata only)**.
+   Save as `data/{segment}/{lineage}/metadata.xls`.
+6. Click **Download → Sequences (DNA) as FASTA**.
+   - Under **DNA**, select only your segment.
+   - Under **FASTA Header**, enter `Virus name`.
+   Save as `data/{segment}/{lineage}/raw_sequences_{segment}.fasta`.
+
+### Downloading genetic (reference) sequences and metadata
+
+1. Navigate to [CDC Seasonal Flu Sequence References](https://cdcgov.github.io/influenza-resources/resources/datasets/seasonal-flu-sequence-references/), go to the "Contemporary" genetic references section.
+2. Click on the correct lineage and segment link to go to the GISAID EPI_SET interface.
+3. Enter your login information to continue to the GISAID EpiFlu interface with the EPI_SET loaded.
+4. Download the metadata XLS and save as `data/{segment}/{lineage}/genetic.xls`.
+5. Download the FASTA with header `Virus name` and save as
+   `data/{segment}/{lineage}/genetic_{segment}.fasta`.
+
+### Downloading reagent sequences and metadata
+
+1. In GISAID EpiFlu, go to **Downloads → Reagent Sequences**.
+2. Select your lineage and segment.
+3. Download the metadata XLS and save as `data/{segment}/{lineage}/reagent.xls`.
+4. Download the FASTA with header `Virus name_Passage details/history` and save as
+   `data/{segment}/{lineage}/reagent_{segment}.fasta`.
+
+## Running a build
+
+Run a build by passing its config file to `nextstrain build`:
+
+```bash
+# H1N1pdm HA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_h1n1pdm_ha.yaml
+
+# H1N1pdm NA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_h1n1pdm_na.yaml
+
+# H3N2 HA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_h3n2_ha.yaml
+
+# H3N2 NA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_h3n2_na.yaml
+
+# B/Vic HA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_vic_ha.yaml
+
+# B/Vic NA
+nextstrain build . --configfile profiles/gisaid/custom_gisaid_vic_na.yaml
 ```
+
+When the build finishes, view the tree:
+
+```bash
 nextstrain view auspice/
 ```
 
-## Quickstart with GISAID data
+Output JSONs are written to `auspice/` with names matching the build name and segment,
+e.g. `auspice/custom_h1n1pdm_na.json`.
 
-Navigate to [GISAID](http://gisaid.org).
-Select the "EpiFlu" link in the top navigation bar and then select "Search" from the EpiFlu navigation bar.
-From the search interface, select A/H3N2 human samples collected in the last six months, as shown in the example below.
+## Customising a build
 
-![Search for recent A/H3N2 data](images/01-search-gisaid-for-h3n2.png)
+**Change the defaults within the auspice display**
 
-Also, under the "Required Segments" section at the bottom of the page, select "HA".
-Then select the "Search" button.
-Select the checkbox in the top-left corner of the search results (the same row with the column headings), to select all matching records as shown below.
+- Open the auspice config file for your build, e.g.
+  `config/h1n1pdm/ha/auspice_config_custom.json`.
+- Edit the `title`, `maintainers`, `build_url`, etc. sections to reflect your build.
 
-![Select all matching records from search results](images/02-gisaid-search-results.png)
-
-Select the "Download" button.
-From the "Download" window that appears, select "Isolates as XLS (virus metadata only)" and then select the "Download" button.
-
-![Download metadata](images/03-download-metadata.png)
-
-Create a new directory for these data in the `seasonal-flu` working directory.
-
-``` bash
-mkdir -p data/h3n2/
-```
-
-Save the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls`) as `data/h3n2/metadata.xls`.
-Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
-In the "DNA" section, select the checkbox for "HA".
-In the "FASTA Header" section, enter only `Isolate name`.
-Leave all other sections at the default values.
-
-![Download sequences](images/04-download-sequences.png)
-
-Select the "Download" button.
-Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta`) as `data/h3n2/raw_sequences_ha.fasta`.
-
-Run the Nextstrain workflow for these data to produce an annotated phylogenetic tree of recent A/H3N2 HA data with the following command.
-
-``` bash
-nextstrain build . --configfile profiles/gisaid/builds.yaml
-```
-
-When the workflow finishes running, visualize the resulting tree with the following command.
-
-``` bash
-nextstrain view auspice
-```
-
-Explore the configuration file for this workflow by opening `profiles/gisaid/builds.yaml` in your favorite text editor.
-This configuration file determines how the workflow runs, including how samples get selected for the tree.
-Try changing the number of maximum sequences retained from subsampling from `100` to `500` and the geographic grouping from `region` to `country`.
-Rerun your analysis by adding the `--forceall` flag to the end of the `nextstrain build` command you ran above.
-How did those changes to the configuration file change the tree?
-
-To skip subsampling and use all records that you downloaded from GISAID, set `filters` string in the build configuration file to an empty string as shown in the following subsection of the YAML file.
+**Change the time window** — set `min_date` to any ISO date:
 
 ```yaml
-      subsamples:
-        global:
-            filters: ""
+min_date: "2024-01-01"
 ```
 
-Explore the other configuration files in `profiles/`, to see other examples of how you can build your own Nextstrain workflows for influenza.
+**Change subsampling** — by default, the build will include all samples from the build file `subsamples` definition.
 
-> [!IMPORTANT]
-> The workflow is optimized for HA and NA segments and requires additional files if you are building other segments!
+The default is:
 
-- The following files are required for different lineage and segment builds:
-  - reference: "config/{lineage}/{segment}/reference.fasta"
-  - annotation: "config/{lineage}/{segment}/genemap.gff"
-  - tree_exclude_sites: "config/{lineage}/{segment}/exclude-sites.txt"
-- The workflow assigns clade annotations to non-HA segments from HA, so the
-`clades` configuration should always point to the HA clade definition TSV.
-- The workflow only has subclade annotations for HA and NA segments, so remove
-the `subclades` configuration for other segments builds.
+```yaml
+subsamples:
+  global:
+    filters: ""
+```
 
-## History
+To create a custom subsampling scheme, you can modify the `filters` field. For example, create a custom regional subsampling scheme that includes all reference and reagent strains, but limits the number of sequences and collection timeliness you could do the following:
 
- - Prior to March 31, 2023, we selected strains for each build using a custom Python script called [select_strains.py](https://github.com/nextstrain/seasonal-flu/blob/64b5204d23c0b95e4b06f943e4efb8db005759c0/scripts/select_strains.py). With the merge of [the refactored workflow](https://github.com/nextstrain/seasonal-flu/pull/76), we have since used a configuration file to define the `augur filter` query logic we want for strain selection per build.
+```yaml
+subsamples:
+  global:
+    filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
+    oceania:
+      filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
+    australia:
+      filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=australia'"
+```
+
+If you downloaded a metadata and sequence file that contains all of your country samples you want to include but also
+wanted a regional+global subsampling, you could edit the subsampling scheme as follows:
+
+```yaml
+subsamples:
+  global:
+    filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
+    oceania:
+      filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
+    australia:
+      filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 10000 --include {include} --exclude-where 'country!=australia'"
+```
+
+By upping the `subsample-max-sequences` for the `australia` subsampling scheme, you can include all of your Australian samples while still subsampling the rest of the world/region.
+
+## Notes
+
+- Each build config sets `data_per_segment: true`, which routes input data through
+  `data/{segment}/{lineage}/` so HA and NA builds can coexist without conflicts.
+- Reference and reagent strains are force-included in the tree regardless of `min_date`
+  via the `include` field, which points to `config/{lineage}/{segment}/reference_strains.txt`.
+  This file is regenerated on each run from your GISAID reagent/genetic downloads.
+- HA clade assignments are only computed for HA builds. NA builds use NA-specific
+  subclades defined in `config/{lineage}/na/subclades.tsv`.
+- Required config files per segment (reference, annotation, exclude-sites) are located
+  in `config/{lineage}/{segment}/`.
 
 [Nextstrain]: https://nextstrain.org
-[fauna]: https://github.com/nextstrain/fauna
 [augur]: https://github.com/nextstrain/augur
 [auspice]: https://github.com/nextstrain/auspice
-[snakemake cli]: https://snakemake.readthedocs.io/en/stable/executable.html#all-options
-[nextstrain-cli]: https://github.com/nextstrain/cli
-[nextstrain-cli README]: https://github.com/nextstrain/cli/blob/master/README.md
+

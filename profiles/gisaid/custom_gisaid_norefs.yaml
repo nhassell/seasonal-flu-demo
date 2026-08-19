@@ -1,6 +1,8 @@
 custom_rules:
   - profiles/gisaid/prepare_data_norefs.smk
 
+data_per_segment: true
+
 metadata_fields:
   - Isolate_Name
   - Isolate_Id

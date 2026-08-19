@@ -20,14 +20,16 @@ output:
 localrules: titer_priorities, select_titers
 
 build_dir = config.get("build_dir", "builds")
+# When True, per-segment data lives at data/{segment}/{lineage}/ to avoid conflicts between segments.
+data_per_segment = config.get("data_per_segment", False)
 
 rule parse:
     message: "Parsing fasta into sequences and metadata"
     input:
-        sequences = "data/{lineage}/raw_{segment}.fasta",
+        sequences = "data/{segment}/{lineage}/raw_{segment}.fasta" if data_per_segment else "data/{lineage}/raw_{segment}.fasta",
     output:
-        sequences = "data/{lineage}/{segment}.fasta",
-        metadata = "data/{lineage}/metadata_{segment}.tsv",
+        sequences = "data/{segment}/{lineage}/{segment}.fasta" if data_per_segment else "data/{lineage}/{segment}.fasta",
+        metadata = "data/{segment}/{lineage}/metadata_{segment}.tsv" if data_per_segment else "data/{lineage}/metadata_{segment}.tsv",
     params:
         fasta_fields=config.get("fasta_fields", ""),
         prettify_fields_arg=lambda wildcards: f"--prettify-fields {' '.join(config['prettify_fields'])}" if "prettify_fields" in config else "",
@@ -48,7 +50,10 @@ rule parse:
 
 rule join_metadata:
     input:
-        segment_metadata=lambda w: [f"data/{w.lineage}/metadata_{segment}.tsv" for segment in config['segments']],
+        segment_metadata=lambda w: [
+            f"data/{seg}/{w.lineage}/metadata_{seg}.tsv" if data_per_segment else f"data/{w.lineage}/metadata_{seg}.tsv"
+            for seg in config['segments']
+        ],
     output:
         metadata="data/{lineage}/metadata_joined.tsv",
     conda: "../envs/nextstrain.yaml"
@@ -218,7 +223,11 @@ rule build_titer_reference_strains_table:
 # so we can include these strains by attribute from augur filter later.
 rule annotate_metadata_with_titer_strains:
     input:
-        metadata=lambda wildcards: f"data/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv",
+        metadata=lambda wildcards: (
+            f"data/{config['segments'][0]}/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv"
+            if data_per_segment else
+            f"data/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv"
+        ),
         titer_strains=build_dir + "/{build_name}/titer_strains.tsv",
         titer_reference_strains=build_dir + "/{build_name}/titer_reference_strains.tsv",
     output:
@@ -252,9 +261,9 @@ rule get_nextclade_dataset_for_lineage_and_segment:
 rule run_nextclade:
     input:
         nextclade_dir="nextclade_dataset/{lineage}_{segment}/",
-        sequences="data/{lineage}/{segment}.fasta",
+        sequences="data/{segment}/{lineage}/{segment}.fasta" if data_per_segment else "data/{lineage}/{segment}.fasta",
     output:
-        annotations="data/{lineage}/{segment}/nextclade.tsv.xz",
+        annotations="data/{segment}/{lineage}/nextclade.tsv.xz" if data_per_segment else "data/{lineage}/{segment}/nextclade.tsv.xz",
     log:
         "logs/run_nextclade_{lineage}_{segment}.txt"
     threads: 8
@@ -270,13 +279,22 @@ rule run_nextclade:
 def get_metadata_for_nextclade_merge(wildcards):
     # Use metadata annotated with a given build's titer strains, if we are
     # building the measurements panel or running titer models.
+    lineage = config['builds'][wildcards.build_name]['lineage']
     if config['builds'][wildcards.build_name].get("enable_measurements") or config['builds'][wildcards.build_name].get("enable_titer_models"):
         return f"{build_dir}/{wildcards.build_name}/full_metadata_with_titer_annotations.tsv"
+    elif data_per_segment:
+        segment = config['segments'][0]
+        return f"data/{segment}/{lineage}/metadata.tsv"
     else:
-        return f"data/{config['builds'][wildcards.build_name]['lineage']}/metadata.tsv"
+        return f"data/{lineage}/metadata.tsv"
 
 def get_nextclade_for_subsampling(wildcards):
-    return f"data/{config['builds'][wildcards.build_name]['lineage']}/ha/nextclade.tsv.xz"
+    lineage = config['builds'][wildcards.build_name]['lineage']
+    segment = config['segments'][0]
+    if data_per_segment:
+        return f"data/{segment}/{lineage}/nextclade.tsv.xz"
+    else:
+        return f"data/{lineage}/{segment}/nextclade.tsv.xz"
 
 rule merge_nextclade_with_metadata:
     """
@@ -360,7 +378,11 @@ rule select_strains:
 
 rule select_sequences:
     input:
-        sequences = lambda w: f"data/{config['builds'][w.build_name]['lineage']}/{w.segment}.fasta",
+        sequences = lambda w: (
+            f"data/{w.segment}/{config['builds'][w.build_name]['lineage']}/{w.segment}.fasta"
+            if data_per_segment else
+            f"data/{config['builds'][w.build_name]['lineage']}/{w.segment}.fasta"
+        ),
         metadata = build_dir + "/{build_name}/metadata.tsv",
         strains = build_dir + "/{build_name}/strains.txt",
     output:

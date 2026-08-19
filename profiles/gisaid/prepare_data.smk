@@ -13,9 +13,9 @@ ruleorder: prepare_metadata > annotate_metadata_with_reference_strains
 # 7. Select the first record for each unique strain name in the metadata, keeping the most recent accession.
 rule prepare_metadata:
     input:
-        metadata="data/{lineage}/metadata.xls",
+        metadata="data/{segment}/{lineage}/metadata.xls",
     output:
-        metadata="data/{lineage}/metadata.tsv",
+        metadata="data/{segment}/{lineage}/metadata.tsv",
     params:
         old_fields=",".join(config["metadata_fields"]),
         new_fields=",".join(config["renamed_metadata_fields"]),
@@ -42,9 +42,9 @@ rule prepare_metadata:
 # 5. Keep the first sequence for a given strain name, keeping the sequence for the most recent accession.
 rule prepare_sequences:
     input:
-        sequences="data/{lineage}/raw_sequences_{segment}.fasta",
+        sequences="data/{segment}/{lineage}/raw_sequences_{segment}.fasta",
     output:
-        sequences="data/{lineage}/{segment}.fasta",
+        sequences="data/{segment}/{lineage}/{segment}.fasta",
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
         """

@@ -41,10 +41,10 @@ rule pull_clade_files:
 rule prepare_metadata:
     input:
         rules.pull_clade_files.output.out_text,
-        metadata_s="data/{lineage}/metadata.xls"
+        metadata_s="data/{segment}/{lineage}/metadata.xls"
     output:
-        metadata_s="data/{lineage}/metadata_s.tsv",
-        metadata="data/{lineage}/metadata.tsv"
+        metadata_s="data/{segment}/{lineage}/metadata_s.tsv",
+        metadata="data/{segment}/{lineage}/metadata.tsv"
     params:
         old_fields=",".join(config["metadata_fields"]),
         new_fields=",".join(config["renamed_metadata_fields"])
@@ -75,11 +75,11 @@ rule prepare_metadata:
 # 6. Keep the first sequence for a given strain name, keeping the sequence for the most recent accession.
 rule prepare_sequences:
     input:
-        sequences_s="data/{lineage}/raw_sequences_{segment}.fasta",
+        sequences_s="data/{segment}/{lineage}/raw_sequences_{segment}.fasta",
         metadata_s=rules.prepare_metadata.output.metadata_s
     output:
-        sequences_s="data/{lineage}/{segment}_s.fasta",
-        sequences="data/{lineage}/{segment}.fasta"
+        sequences_s="data/{segment}/{lineage}/{segment}_s.fasta",
+        sequences="data/{segment}/{lineage}/{segment}.fasta"
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
         """
@@ -91,5 +91,7 @@ rule prepare_sequences:
             | seqkit replace -s -p "[Uu]" -r "T" \
             | seqkit rmdup > {output.sequences_s};
         seqkit rmdup {output.sequences_s} \
-            | seqkit sort -n > {output.sequences};
+            | seqkit sort -n -r \
+            | seqkit replace -p " .*" -r "" \
+            | seqkit rmdup > {output.sequences};
         """

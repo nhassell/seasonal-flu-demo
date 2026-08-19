@@ -71,9 +71,10 @@ cd seasonal-flu-demo
 ### Downloading Sample Data
 
 Create a new directory for the data we will be downloading in the `seasonal-flu-demo` working directory.
+The workflow organises data by segment first, then lineage, so HA and NA builds do not overwrite each other.
 
 ``` bash
-mkdir -p data/h3n2/
+mkdir -p data/ha/h3n2/
 ```
 
 Navigate to [GISAID](http://gisaid.org).
@@ -95,7 +96,7 @@ From the "Download" window that appears, select "Isolates as XLS (virus metadata
 
 It may take a little while to download the information. Be patient.
 
-Save the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls`) in the `data/h3n2/` folder you created
+Save the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls`) in the `data/ha/h3n2/` folder you created
 earlier as `metadata.xls`.
 
 Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
@@ -107,7 +108,7 @@ Leave all other sections at the default values.
 
 Select the "Download" button.
 Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta`) as `raw_sequences_ha.fasta` in the
-`data/h3n2/` folder.
+`data/ha/h3n2/` folder.
 
 ### Downloading Reference Data
 
@@ -137,7 +138,7 @@ From the "Download" window that appears, select "Isolates as XLS (virus metadata
 
 ![Download reference metadata](images/07-reference-md-epi.png)
 
-Copy the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls (1)`) as `genetic.xls` in the `data/h3n2/` folder.
+Copy the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls (1)`) as `genetic.xls` in the `data/ha/h3n2/` folder.
 
 Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
 In the "DNA" section, select the checkbox for "HA".
@@ -152,7 +153,7 @@ Leave all other sections at the default values.
 ![Download sequences](images/08-reference-seqs-epi.png)
 
 Select the "Download" button.
-Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (1)`) as `genetic_ha.fasta` in the `data/h3n2/` folder.
+Save the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (1)`) as `genetic_ha.fasta` in the `data/ha/h3n2/` folder.
 
 #### Reagent Reference Download
 
@@ -177,7 +178,7 @@ From the "Download" window that appears, select "Isolates as XLS (virus metadata
 
 ![Download reference metadata](images/10-reagent-md.png)
 
-Copy the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls (2)`) and rename as `reagent.xls` in the `data/h3n2/` folder.
+Copy the XLS file you downloaded (e.g., `gisaid_epiflu_isolates.xls (2)`) and rename as `reagent.xls` in the `data/ha/h3n2/` folder.
 
 Return to the GISAID "Download" window, and select "Sequences (DNA) as FASTA".
 In the "DNA" section, select the checkbox for "HA".
@@ -192,7 +193,7 @@ Leave all other sections at the default values.
 ![Download sequences](images/11-reagent-seqs.png)
 
 Select the "Download" button.
-Copy the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (2)`) as `reagent_ha.fasta` in the `data/h3n2/` folder.
+Copy the FASTA file you downloaded (e.g., `gisaid_epiflu_sequences.fasta (2)`) as `reagent_ha.fasta` in the `data/ha/h3n2/` folder.
 
 ### Customizing Basic Build Elements
 
@@ -267,15 +268,21 @@ Take a look at the file contents of `profiles/gisaid/custom_gisaid.yaml` compare
 
 Much of it has remained the same, but there are several changes.
 
-First, we have changed the `custom_rules` definition.
+First, we have changed the `custom_rules` definition and added `data_per_segment`.
 ``` yaml
 custom_rules:
   - profiles/gisaid/prepare_data_wrefs.smk
+
+data_per_segment: true
 ```
 
 Take a quick look at the file `profiles/gisaid/prepare_data_wrefs.smk` compared to `profiles/gisaid/prepare_data.smk`.
 Code execution has been added to the `shell` portions of these rules to download the most current clade/subclade information,
 process the reference data we downloaded, and concatenate it with the sample data.
+
+Setting `data_per_segment: true` tells the workflow to look for input data under `data/{segment}/{lineage}/`
+(e.g. `data/ha/h3n2/`) instead of the legacy `data/{lineage}/` layout. This allows HA and NA builds for the
+same lineage to coexist without overwriting each other's files.
 
 Second, we've changed the `auspice_config` definition.
 ``` yaml
@@ -292,8 +299,9 @@ Third, we've added the `root`, `include`, and `min_date` definitions.
 ```
 
 This sets `A/Norway/3288/2018` as the root from our reference metadata, defines an inclusion file location for all of our
-references we would like to force to be included, and sets a minimum sampling date of `2025-01-01`. The file 
-(`config/h3n2/ha/reference_strains.txt`) is a list from the `strain` field of our references metadata file.
+references we would like to force to be included, and sets a minimum sampling date of `2025-01-01`. The file
+`config/h3n2/ha/reference_strains.txt` is **automatically generated** by the workflow's `prepare_sequences` step
+from the strain names in the genetic and reagent metadata you downloaded — you do not need to create or edit it manually.
 
 Lastly, we have altered the `subsamples` definition.
 ``` yaml

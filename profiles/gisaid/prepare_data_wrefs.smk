@@ -41,16 +41,16 @@ rule pull_clade_files:
 rule prepare_metadata:
     input:
         rules.pull_clade_files.output.out_text,
-        metadata_s="data/{lineage}/metadata.xls",
-        metadata_g="data/{lineage}/genetic.xls",
-        metadata_r="data/{lineage}/reagent.xls"
+        metadata_s="data/{segment}/{lineage}/metadata.xls",
+        metadata_g="data/{segment}/{lineage}/genetic.xls",
+        metadata_r="data/{segment}/{lineage}/reagent.xls"
     output:
-        metadata_s="data/{lineage}/metadata_s.tsv",
-        metadata_g="data/{lineage}/metadata_g.tsv",
-        metadata_r="data/{lineage}/metadata_r.tsv",
-        metadata_i="data/{lineage}/metadata_i.tsv",
-        metadata_ir="data/{lineage}/metadata_ir.tsv",
-        metadata="data/{lineage}/metadata.tsv"
+        metadata_s="data/{segment}/{lineage}/metadata_s.tsv",
+        metadata_g="data/{segment}/{lineage}/metadata_g.tsv",
+        metadata_r="data/{segment}/{lineage}/metadata_r.tsv",
+        metadata_i="data/{segment}/{lineage}/metadata_i.tsv",
+        metadata_ir="data/{segment}/{lineage}/metadata_ir.tsv",
+        metadata="data/{segment}/{lineage}/metadata.tsv"
     params:
         old_fields=",".join(config["metadata_fields"]),
         new_fields=",".join(config["renamed_metadata_fields"])
@@ -107,16 +107,16 @@ rule prepare_metadata:
 # 6. Keep the first sequence for a given strain name, keeping the sequence for the most recent accession.
 rule prepare_sequences:
     input:
-        sequences_s="data/{lineage}/raw_sequences_{segment}.fasta",
-        sequences_g="data/{lineage}/genetic_{segment}.fasta",
-        sequences_r="data/{lineage}/reagent_{segment}.fasta",
+        sequences_s="data/{segment}/{lineage}/raw_sequences_{segment}.fasta",
+        sequences_g="data/{segment}/{lineage}/genetic_{segment}.fasta",
+        sequences_r="data/{segment}/{lineage}/reagent_{segment}.fasta",
         metadata_ir=rules.prepare_metadata.output.metadata_ir
     output:
-        sequences_s="data/{lineage}/{segment}_s.fasta",
-        sequences_g="data/{lineage}/{segment}_g.fasta",
-        sequences_r="data/{lineage}/{segment}_r.fasta",
-        sequences_i="data/{lineage}/{segment}_i.fasta",
-        sequences="data/{lineage}/{segment}.fasta",
+        sequences_s="data/{segment}/{lineage}/{segment}_s.fasta",
+        sequences_g="data/{segment}/{lineage}/{segment}_g.fasta",
+        sequences_r="data/{segment}/{lineage}/{segment}_r.fasta",
+        sequences_i="data/{segment}/{lineage}/{segment}_i.fasta",
+        sequences="data/{segment}/{lineage}/{segment}.fasta",
         references="config/{lineage}/{segment}/reference_strains.txt"
     conda: "../../workflow/envs/nextstrain.yaml"
     shell:
@@ -144,7 +144,9 @@ rule prepare_sequences:
             | seqkit rmdup > {output.sequences_r};
         cat {output.sequences_s} {output.sequences_g} {output.sequences_r} > {output.sequences_i};
         seqkit rmdup {output.sequences_i} \
-            | seqkit sort -n > {output.sequences};
+            | seqkit sort -n -r \
+            | seqkit replace -p " .*" -r "" \
+            | seqkit rmdup > {output.sequences};
         csvtk -t cut -f strain {input.metadata_ir} \
             | tail -n +2 > {output.references};
         """

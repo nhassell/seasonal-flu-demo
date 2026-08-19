@@ -402,6 +402,8 @@ rule subclades:
 
 # Assign clade annotations to non-HA segments from HA.
 rule import_clades:
+    wildcard_constraints:
+        segment = r'pb2|pb1|pa|np|na|mp|ns'
     input:
         tree = build_dir + "/{build_name}/ha/tree.nwk",
         muts = build_dir + "/{build_name}/{segment}/muts.json",

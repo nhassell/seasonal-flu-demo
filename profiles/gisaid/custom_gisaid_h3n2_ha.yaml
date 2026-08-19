@@ -47,8 +47,12 @@ builds:
       min_date: "2025-01-01" # only include sample sequences collected on or after this date, modify as needed
       subsamples: # Can modify these subsampling schemes or add your own
         global:
-          filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
-        oceania:
-          filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
-        australia:
-          filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=australia'"
+          filters: "" # This default filter will include all samples 
+        ## Customized filtering can also be specified, below is an example for a
+        ## region/country-specific subsampling scheme. Uncomment and modify as needed.
+        # global:
+        #   filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
+        # oceania:
+        #   filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
+        # australia:
+        #   filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=australia'"

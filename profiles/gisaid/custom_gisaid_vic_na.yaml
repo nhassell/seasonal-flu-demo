@@ -1,0 +1,58 @@
+custom_rules:
+  - profiles/gisaid/prepare_data_wrefs.smk
+
+data_per_segment: true
+
+metadata_fields:
+  - Isolate_Name
+  - Isolate_Id
+  - Passage_History
+  - Location
+  - Isolate_Submitter
+  - Collection_Date
+  - Submission_Date
+renamed_metadata_fields:
+  - strain
+  - accession
+  - passage
+  - full_location
+  - authors
+  - date
+  - date_submitted
+
+lat-longs: "config/lat_longs.tsv"
+
+segments:
+  - na
+
+submission_date_field: date_submitted
+recency:
+  date_bins: [7, 30, 90] # subsampling recency bins in days
+  date_bin_labels: ["last week", "last month", "last quarter"]
+  upper_bin_label: older
+
+builds:
+    "custom_vic":
+      lineage: vic # h1n1pdm, h3n2, or vic are currently supported
+      reference: "config/vic/{segment}/reference.fasta" # change if doing h1n1pdm or vic
+      annotation: "config/vic/{segment}/genemap.gff" # change if doing h1n1pdm or vic
+      tree_exclude_sites: "config/vic/{segment}/exclude-sites.txt" # change if doing h1n1pdm or vic
+      clades: "config/vic/ha/clades.tsv" # change if doing h1n1pdm or vic
+      subclades: "config/vic/na/subclades.tsv" # change if doing h1n1pdm or vic
+      auspice_config: "config/vic/na/auspice_config_custom.json" # change if doing h1n1pdm or vic
+      root: B/Nigeria/3358/2018 # change if doing h1n1pdm (A/Belgium/G0336/2019) or vic (B/Nigeria/3358/2018)
+      enable_lbi: true
+      enable_glycosylation: true
+      include: "config/vic/na/reference_strains.txt" # change if doing h1n1pdm or vic
+      min_date: "2025-01-01" # only include sample sequences collected on or after this date, modify as needed
+      subsamples: # Can modify these subsampling schemes or add your own
+        global:
+          filters: "" # This default filter will include all samples 
+        ## Customized filtering can also be specified, below is an example for a
+        ## region/country-specific subsampling scheme. Uncomment and modify as needed.
+        # global:
+        #   filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 150 --include {include} --exclude-where 'region=oceania'"
+        # oceania:
+        #   filters: "--min-date {min_date} --group-by country year month --subsample-max-sequences 100 --include {include} --exclude-where 'region!=oceania'"
+        # australia:
+        #   filters: "--min-date {min_date} --group-by division year month --subsample-max-sequences 200 --include {include} --exclude-where 'country!=australia'"
