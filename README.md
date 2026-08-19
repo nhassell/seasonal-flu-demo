@@ -70,10 +70,11 @@ data/
 
 ### Downloading reagent sequences and metadata
 
-1. In GISAID EpiFlu, go to **Downloads → Reagent Sequences**.
-2. Select your lineage and segment.
-3. Download the metadata XLS and save as `data/{segment}/{lineage}/reagent.xls`.
-4. Download the FASTA with header `Virus name_Passage details/history` and save as
+1. Navigate to [CDC Seasonal Flu Sequence References](https://cdcgov.github.io/influenza-resources/resources/datasets/seasonal-flu-sequence-references/), go to the "Reagent References" section.
+2. Click on the correct lineage and segment link to go to the GISAID EPI_SET interface.
+3. Enter your login information to continue to the GISAID EpiFlu interface with the EPI_SET loaded.
+4. Download the metadata XLS and save as `data/{segment}/{lineage}/reagent.xls`.
+5. Download the FASTA with header `Virus name_Passage details/history` and save as
    `data/{segment}/{lineage}/reagent_{segment}.fasta`.
 
 ## Running a build
